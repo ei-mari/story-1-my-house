@@ -322,6 +322,23 @@
         line-height: 1.6;
       }
 
+      .note {
+        margin: 0;
+        padding: 10px 12px;
+        border: 1px solid #ffe3a1;
+        border-radius: 8px;
+        background: #fff8df;
+        color: #7a5411;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        font-weight: 700;
+      }
+
+      .note.hidden {
+        display: none;
+      }
+
       .sentence-actions {
         display: grid;
         gap: 10px;
@@ -575,8 +592,9 @@
         },
         {
           text: "We have a garage, and we park our car in the garage.",
-          ipa: "/wi hæv ə ɡəˈrɑʒ, ənd wi pɑrk ˈaʊɚ kɑr ɪn ðə ɡəˈrɑʒ/",
+          ipa: "/wi hæv ə ɡəˈrɑdʒ, ənd wi pɑrk ˈaʊɚ kɑr ɪn ðə ɡəˈrɑdʒ/",
           meaning: "ガレージがあり、車をガレージに停めます。",
+          note: "/ɡəˈrɑdʒ/は/ɡəˈrɑʒ/でもOKです！",
         },
         {
           text: "Our car is blue.",
@@ -626,11 +644,17 @@
                 <p class="meaning"></p>
               </div>
             </details>
+            <p class="note hidden"></p>
           </div>
         `;
         card.querySelector(".sentence").textContent = item.text;
         card.querySelector(".ipa").textContent = item.ipa;
         card.querySelector(".meaning").textContent = item.meaning;
+        const note = card.querySelector(".note");
+        if (item.note) {
+          note.textContent = item.note;
+          note.classList.remove("hidden");
+        }
         list.appendChild(card);
       });
 
