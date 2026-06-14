@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story 1 | My House</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap");
+
+      :root {
+        --sky: #0b8ee9;
+        --sea: #006dbb;
+        --sun: #ffd321;
+        --leaf: #147a38;
+        --grass: #5bb52e;
+        --ink: #14304d;
+        --muted: #5d7186;
+        --paper: #ffffff;
+        --cream: #fff8db;
+        --line: rgba(18, 84, 137, 0.18);
+        --shadow: 0 18px 42px rgba(14, 68, 120, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.85) 42%),
+          linear-gradient(135deg, #c9f0ff 0%, #fff9d0 42%, #e6ffd5 100%);
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page {
+        width: min(1120px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 18px 0 42px;
+      }
+
+      .hero {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: #8fdcff;
+      }
+
+      .hero img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .hero::after {
+        content: none;
+      }
+
+      .hero-bar {
+        position: absolute;
+        left: clamp(14px, 3vw, 32px);
+        right: clamp(14px, 3vw, 32px);
+        bottom: clamp(14px, 3vw, 28px);
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .title-block {
+        color: #ffffff;
+        text-shadow: 0 3px 14px rgba(0, 36, 67, 0.48);
+      }
+
+      .title-block p {
+        margin: 0 0 4px;
+        font-size: clamp(0.82rem, 2vw, 1rem);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .title-block h1 {
+        margin: 0;
+        font-size: clamp(2rem, 7vw, 5.2rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .top-links {
+        margin-top: 12px;
+        justify-content: center;
+      }
+
+      .pill-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 999px;
+        color: #083c67;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 10px 24px rgba(5, 51, 92, 0.12);
+      }
+
+      .section {
+        margin-top: 18px;
+      }
+
+      .player-strip {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        padding: clamp(18px, 3vw, 26px);
+        border: 1px solid rgba(255, 211, 33, 0.65);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 245, 177, 0.96), rgba(255, 255, 255, 0.96) 52%),
+          var(--paper);
+        box-shadow: 0 14px 34px rgba(183, 130, 18, 0.14);
+      }
+
+      .player-copy {
+        min-width: 0;
+      }
+
+      .label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #0d79c8;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+
+      .player-copy h2 {
+        margin: 10px 0 6px;
+        font-size: clamp(1.5rem, 4vw, 2.3rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .player-copy p {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 800;
+        line-height: 1.6;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .play-btn,
+      .stop-btn {
+        min-height: 44px;
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 18px;
+        color: #ffffff;
+        font-weight: 900;
+        box-shadow: 0 10px 22px rgba(12, 95, 152, 0.22);
+      }
+
+      .play-btn {
+        background: linear-gradient(180deg, #1599ec, #006dbb);
+      }
+
+      .stop-btn {
+        background: linear-gradient(180deg, #ffb82e, #ed8d00);
+      }
+
+      .rate-select {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0 12px;
+        color: var(--ink);
+        background: #ffffff;
+        font-weight: 900;
+      }
+
+      .story-text {
+        margin-top: 12px;
+        padding: clamp(18px, 3vw, 28px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 28px rgba(35, 92, 135, 0.1);
+      }
+
+      .story-text p {
+        margin: 0;
+        color: #17334f;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.03rem, 2.4vw, 1.2rem);
+        line-height: 1.85;
+        font-weight: 600;
+      }
+
+      .section-heading {
+        margin: 30px 0 12px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 4vw, 2.1rem);
+        line-height: 1.1;
+        letter-spacing: 0;
+      }
+
+      .counter {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .sentence-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .sentence-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        padding: clamp(14px, 3vw, 20px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 8px 22px rgba(29, 83, 124, 0.08);
+      }
+
+      .number {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient(180deg, var(--grass), var(--leaf));
+        font-weight: 900;
+        box-shadow: 0 8px 16px rgba(20, 122, 56, 0.2);
+      }
+
+      .sentence-body {
+        min-width: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .sentence {
+        margin: 0;
+        color: #102c48;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.1rem, 3vw, 1.34rem);
+        line-height: 1.55;
+        font-weight: 700;
+      }
+
+      .ipa {
+        margin: 0;
+        color: #164b6d;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.02rem, 2.5vw, 1.12rem);
+        line-height: 1.7;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+
+      .meaning {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 800;
+        line-height: 1.6;
+      }
+
+      .sentence-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .sentence-actions .play-btn,
+      .sentence-actions .stop-btn,
+      .sentence-actions .rate-select {
+        min-height: 38px;
+        padding: 7px 13px;
+        font-size: 0.88rem;
+      }
+
+      .footer-note {
+        margin: 20px 0 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          width: min(100% - 20px, 560px);
+          padding-top: 10px;
+        }
+
+        .hero {
+          aspect-ratio: 16 / 9;
+        }
+
+        .hero img {
+          object-position: center;
+        }
+
+        .hero-bar,
+        .player-strip,
+        .sentence-card {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          justify-content: flex-start;
+        }
+
+        .quick-links {
+          width: 100%;
+        }
+
+        .pill-link {
+          flex: 1 1 auto;
+        }
+
+        .section-heading {
+          align-items: start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero" aria-label="My House Story 1">
+        <img src="./assets/story-1/story_1.png" alt="My House Story 1 thumbnail" />
+      </section>
+      <div class="quick-links top-links">
+        <a class="pill-link" href="#fullStory">Full Audio</a>
+        <a class="pill-link" href="#sentences">Sentence Practice</a>
+      </div>
+
+      <section id="fullStory" class="section">
+        <div class="player-strip">
+          <div class="player-copy">
+            <span class="label">STORY 1</span>
+            <h2>Listen to the whole story</h2>
+            <p>My House / True Story</p>
+          </div>
+          <div class="controls" data-audio="./audio/story-1/story1-full.mp3">
+            <select class="rate-select" aria-label="速度">
+              <option value="1">1.0x</option>
+              <option value="0.75">0.75x</option>
+              <option value="0.5">0.5x</option>
+              <option value="0.25">0.25x</option>
+            </select>
+            <button class="play-btn" type="button">Play</button>
+            <button class="stop-btn" type="button">Stop</button>
+          </div>
+        </div>
+
+        <div class="story-text">
+          <p>
+            I (Camille) live in Portugal. Portugal is in Europe, next to Spain. I live in a
+            small city on the sea. There are many cars that drive on our street. I live in a
+            big house. It is yellow and white. My house has two floors. It has four bedrooms,
+            four bathrooms, a kitchen, and a living room. There are many windows. I like my
+            house. My house has a yard with a lot of trees. There is an orange tree. There is
+            also an avocado tree. I like to eat the fruit from the trees. The fruit is very
+            good. I like to sit outside and watch my children play. We have a small pool. In
+            this summer, my kids swim in the pool. They have fun. We have a garage, and we park
+            our car in the garage. Our car is blue. We are happy here. We like our house, our
+            yard, and our car.
+          </p>
+        </div>
+      </section>
+
+      <section id="sentences" class="section">
+        <div class="section-heading">
+          <h2>Sentence Practice</h2>
+          <span class="counter">23 sentences</span>
+        </div>
+        <div id="sentenceList" class="sentence-list"></div>
+      </section>
+
+      <p class="footer-note">Story 1 / My House</p>
+    </main>
+
+    <script>
+      const sentences = [
+        {
+          text: "I (Camille) live in Portugal.",
+          ipa: "/aɪ kəˈmil lɪv ɪn ˈpɔrtʃəɡəl/",
+          meaning: "私は（カミール）ポルトガルに住んでいます。",
+        },
+        {
+          text: "Portugal is in Europe, next to Spain.",
+          ipa: "/ˈpɔrtʃəɡəl ɪz ɪn ˈjʊrəp, nɛkst tə speɪn/",
+          meaning: "ポルトガルはヨーロッパにあり、スペインの隣です。",
+        },
+        {
+          text: "I live in a small city on the sea.",
+          ipa: "/aɪ lɪv ɪn ə smɔl ˈsɪti ɑn ðə si/",
+          meaning: "私は海沿いの小さな街に住んでいます。",
+        },
+        {
+          text: "There are many cars that drive on our street.",
+          ipa: "/ðɛr ɑr ˈmɛni kɑrz ðət draɪv ɑn ˈaʊɚ strit/",
+          meaning: "私たちの通りには、たくさんの車が走っています。",
+        },
+        {
+          text: "I live in a big house.",
+          ipa: "/aɪ lɪv ɪn ə bɪɡ haʊs/",
+          meaning: "私は大きな家に住んでいます。",
+        },
+        {
+          text: "It is yellow and white.",
+          ipa: "/ɪt ɪz ˈjɛloʊ ənd waɪt/",
+          meaning: "それは黄色と白です。",
+        },
+        {
+          text: "My house has two floors.",
+          ipa: "/maɪ haʊs hæz tu flɔrz/",
+          meaning: "私の家は2階建てです。",
+        },
+        {
+          text: "It has four bedrooms, four bathrooms, a kitchen, and a living room.",
+          ipa: "/ɪt hæz fɔr ˈbɛdˌrumz, fɔr ˈbæθˌrumz, ə ˈkɪtʃən, ənd ə ˈlɪvɪŋ rum/",
+          meaning: "寝室が4つ、浴室が4つ、キッチン、リビングルームがあります。",
+        },
+        {
+          text: "There are many windows.",
+          ipa: "/ðɛr ɑr ˈmɛni ˈwɪndoʊz/",
+          meaning: "窓がたくさんあります。",
+        },
+        {
+          text: "I like my house.",
+          ipa: "/aɪ laɪk maɪ haʊs/",
+          meaning: "私は自分の家が好きです。",
+        },
+        {
+          text: "My house has a yard with a lot of trees.",
+          ipa: "/maɪ haʊs hæz ə jɑrd wɪð ə lɑt əv triz/",
+          meaning: "私の家には木がたくさんある庭があります。",
+        },
+        {
+          text: "There is an orange tree.",
+          ipa: "/ðɛr ɪz ən ˈɔrɪndʒ tri/",
+          meaning: "オレンジの木があります。",
+        },
+        {
+          text: "There is also an avocado tree.",
+          ipa: "/ðɛr ɪz ˈɔlsoʊ ən ˌævəˈkɑdoʊ tri/",
+          meaning: "アボカドの木もあります。",
+        },
+        {
+          text: "I like to eat the fruit from the trees.",
+          ipa: "/aɪ laɪk tə it ðə frut frəm ðə triz/",
+          meaning: "私は木からとれる果物を食べるのが好きです。",
+        },
+        {
+          text: "The fruit is very good.",
+          ipa: "/ðə frut ɪz ˈvɛri ɡʊd/",
+          meaning: "その果物はとてもおいしいです。",
+        },
+        {
+          text: "I like to sit outside and watch my children play.",
+          ipa: "/aɪ laɪk tə sɪt ˌaʊtˈsaɪd ənd wɑtʃ maɪ ˈtʃɪldrən pleɪ/",
+          meaning: "私は外に座って、子どもたちが遊ぶのを見るのが好きです。",
+        },
+        {
+          text: "We have a small pool.",
+          ipa: "/wi hæv ə smɔl pul/",
+          meaning: "小さなプールがあります。",
+        },
+        {
+          text: "In this summer, my kids swim in the pool.",
+          ipa: "/ɪn ðɪs ˈsʌmɚ, maɪ kɪdz swɪm ɪn ðə pul/",
+          meaning: "夏には、子どもたちがプールで泳ぎます。",
+        },
+        {
+          text: "They have fun.",
+          ipa: "/ðeɪ hæv fʌn/",
+          meaning: "子どもたちは楽しんでいます。",
+        },
+        {
+          text: "We have a garage, and we park our car in the garage.",
+          ipa: "/wi hæv ə ɡəˈrɑʒ, ənd wi pɑrk ˈaʊɚ kɑr ɪn ðə ɡəˈrɑʒ/",
+          meaning: "ガレージがあり、車をガレージに停めます。",
+        },
+        {
+          text: "Our car is blue.",
+          ipa: "/ˈaʊɚ kɑr ɪz blu/",
+          meaning: "私たちの車は青です。",
+        },
+        {
+          text: "We are happy here.",
+          ipa: "/wi ɑr ˈhæpi hɪr/",
+          meaning: "私たちはここで幸せです。",
+        },
+        {
+          text: "We like our house, our yard, and our car.",
+          ipa: "/wi laɪk ˈaʊɚ haʊs, ˈaʊɚ jɑrd, ənd ˈaʊɚ kɑr/",
+          meaning: "私たちは家、庭、そして車が好きです。",
+        },
+      ];
+
+      const list = document.querySelector("#sentenceList");
+      let currentAudio = null;
+
+      sentences.forEach((item, index) => {
+        const number = String(index + 1).padStart(2, "0");
+        const card = document.createElement("article");
+        card.className = "sentence-card";
+        card.innerHTML = `
+          <div class="number">${number}</div>
+          <div class="sentence-body">
+            <p class="sentence"></p>
+            <p class="ipa"></p>
+            <p class="meaning"></p>
+            <div class="sentence-actions" data-audio="./audio/story-1/story1-${number}.mp3">
+              <select class="rate-select" aria-label="速度">
+                <option value="1">1.0x</option>
+                <option value="0.75">0.75x</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.25">0.25x</option>
+              </select>
+              <button class="play-btn" type="button">Play</button>
+              <button class="stop-btn" type="button">Stop</button>
+            </div>
+          </div>
+        `;
+        card.querySelector(".sentence").textContent = item.text;
+        card.querySelector(".ipa").textContent = item.ipa;
+        card.querySelector(".meaning").textContent = item.meaning;
+        list.appendChild(card);
+      });
+
+      document.addEventListener("click", (event) => {
+        const playButton = event.target.closest(".play-btn");
+        const stopButton = event.target.closest(".stop-btn");
+        if (!playButton && !stopButton) return;
+
+        const controls = event.target.closest("[data-audio]");
+        if (!controls) return;
+
+        if (stopButton) {
+          stopAudio();
+          return;
+        }
+
+        const rate = Number(controls.querySelector(".rate-select")?.value || 1);
+        playAudio(controls.dataset.audio, rate);
+      });
+
+      function playAudio(src, rate) {
+        stopAudio();
+        currentAudio = new Audio(src);
+        currentAudio.playbackRate = Number.isFinite(rate) ? rate : 1;
+        currentAudio.addEventListener("ended", () => {
+          currentAudio = null;
+        });
+        currentAudio.play().catch(() => {
+          currentAudio = null;
+          alert("音声を再生できませんでした。");
+        });
+      }
+
+      function stopAudio() {
+        if (!currentAudio) return;
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+    </script>
+  </body>
+</html>
