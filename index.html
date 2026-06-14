@@ -37,6 +37,8 @@
       body {
         margin: 0;
         min-height: 100vh;
+        display: flex;
+        justify-content: center;
         font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
         color: var(--ink);
         background:
@@ -54,7 +56,7 @@
       }
 
       .page {
-        width: min(1120px, calc(100% - 28px));
+        width: min(430px, calc(100% - 20px));
         margin: 0 auto;
         padding: 18px 0 42px;
       }
@@ -146,7 +148,7 @@
 
       .player-strip {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: 1fr;
         gap: 16px;
         align-items: center;
         padding: clamp(18px, 3vw, 26px);
@@ -189,40 +191,35 @@
       }
 
       .controls {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        gap: 10px;
+      }
+
+      .audio-player {
+        width: 100%;
+        height: 42px;
+      }
+
+      .speed-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
-        justify-content: flex-end;
-        align-items: center;
       }
 
-      .play-btn,
-      .stop-btn {
+      .speed-btn {
         min-height: 44px;
-        border: 0;
+        border: 1px solid #c9def3;
         border-radius: 999px;
-        padding: 10px 18px;
+        background: #f7fbff;
+        color: #164b6d;
+        font-weight: 900;
+        box-shadow: 0 6px 14px rgba(12, 95, 152, 0.08);
+      }
+
+      .speed-btn.active {
+        border-color: #1479c9;
         color: #ffffff;
-        font-weight: 900;
-        box-shadow: 0 10px 22px rgba(12, 95, 152, 0.22);
-      }
-
-      .play-btn {
         background: linear-gradient(180deg, #1599ec, #006dbb);
-      }
-
-      .stop-btn {
-        background: linear-gradient(180deg, #ffb82e, #ed8d00);
-      }
-
-      .rate-select {
-        min-height: 44px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 0 12px;
-        color: var(--ink);
-        background: #ffffff;
-        font-weight: 900;
       }
 
       .story-text {
@@ -326,18 +323,60 @@
       }
 
       .sentence-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
+        display: grid;
+        gap: 10px;
       }
 
-      .sentence-actions .play-btn,
-      .sentence-actions .stop-btn,
-      .sentence-actions .rate-select {
-        min-height: 38px;
-        padding: 7px 13px;
+      .sentence-actions .audio-player {
+        height: 38px;
+      }
+
+      .sentence-actions .speed-btn {
+        min-height: 36px;
         font-size: 0.88rem;
+      }
+
+      .detail-panel {
+        border: 1px solid #dce9f5;
+        border-radius: 8px;
+        background: #f8fcff;
+        overflow: hidden;
+      }
+
+      .detail-panel summary {
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        padding: 9px 12px;
+        color: #174c73;
+        font-size: 0.92rem;
+        font-weight: 900;
+        list-style: none;
+        cursor: pointer;
+      }
+
+      .detail-panel summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .detail-panel summary::after {
+        content: "+";
+        margin-left: auto;
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #e5f2ff;
+        color: #0f6fb8;
+      }
+
+      .detail-panel[open] summary::after {
+        content: "-";
+      }
+
+      .detail-content {
+        padding: 0 12px 12px;
       }
 
       .footer-note {
@@ -363,13 +402,8 @@
         }
 
         .hero-bar,
-        .player-strip,
         .sentence-card {
           grid-template-columns: 1fr;
-        }
-
-        .controls {
-          justify-content: flex-start;
         }
 
         .quick-links {
@@ -405,14 +439,13 @@
             <p>My House / True Story</p>
           </div>
           <div class="controls" data-audio="./audio/story-1/story1-full.mp3">
-            <select class="rate-select" aria-label="速度">
-              <option value="1">1.0x</option>
-              <option value="0.75">0.75x</option>
-              <option value="0.5">0.5x</option>
-              <option value="0.25">0.25x</option>
-            </select>
-            <button class="play-btn" type="button">Play</button>
-            <button class="stop-btn" type="button">Stop</button>
+            <audio class="audio-player" controls preload="metadata" src="./audio/story-1/story1-full.mp3"></audio>
+            <div class="speed-buttons" aria-label="再生速度">
+              <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+              <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+              <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+              <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+            </div>
           </div>
         </div>
 
@@ -563,7 +596,6 @@
       ];
 
       const list = document.querySelector("#sentenceList");
-      let currentAudio = null;
 
       sentences.forEach((item, index) => {
         const number = String(index + 1).padStart(2, "0");
@@ -573,18 +605,27 @@
           <div class="number">${number}</div>
           <div class="sentence-body">
             <p class="sentence"></p>
-            <p class="ipa"></p>
-            <p class="meaning"></p>
             <div class="sentence-actions" data-audio="./audio/story-1/story1-${number}.mp3">
-              <select class="rate-select" aria-label="速度">
-                <option value="1">1.0x</option>
-                <option value="0.75">0.75x</option>
-                <option value="0.5">0.5x</option>
-                <option value="0.25">0.25x</option>
-              </select>
-              <button class="play-btn" type="button">Play</button>
-              <button class="stop-btn" type="button">Stop</button>
+              <audio class="audio-player" controls preload="metadata" src="./audio/story-1/story1-${number}.mp3"></audio>
+              <div class="speed-buttons" aria-label="再生速度">
+                <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+                <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+              </div>
             </div>
+            <details class="detail-panel">
+              <summary>発音記号を表示する</summary>
+              <div class="detail-content">
+                <p class="ipa"></p>
+              </div>
+            </details>
+            <details class="detail-panel">
+              <summary>日本語を表示する</summary>
+              <div class="detail-content">
+                <p class="meaning"></p>
+              </div>
+            </details>
           </div>
         `;
         card.querySelector(".sentence").textContent = item.text;
@@ -594,41 +635,31 @@
       });
 
       document.addEventListener("click", (event) => {
-        const playButton = event.target.closest(".play-btn");
-        const stopButton = event.target.closest(".stop-btn");
-        if (!playButton && !stopButton) return;
+        const speedButton = event.target.closest(".speed-btn");
+        if (!speedButton) return;
 
-        const controls = event.target.closest("[data-audio]");
-        if (!controls) return;
+        const controls = speedButton.closest("[data-audio]");
+        const audio = controls?.querySelector(".audio-player");
+        if (!audio) return;
 
-        if (stopButton) {
-          stopAudio();
-          return;
-        }
-
-        const rate = Number(controls.querySelector(".rate-select")?.value || 1);
-        playAudio(controls.dataset.audio, rate);
+        const rate = Number(speedButton.dataset.rate || 1);
+        audio.playbackRate = Number.isFinite(rate) ? rate : 1;
+        controls.querySelectorAll(".speed-btn").forEach((button) => {
+          button.classList.toggle("active", button === speedButton);
+        });
       });
 
-      function playAudio(src, rate) {
-        stopAudio();
-        currentAudio = new Audio(src);
-        currentAudio.playbackRate = Number.isFinite(rate) ? rate : 1;
-        currentAudio.addEventListener("ended", () => {
-          currentAudio = null;
-        });
-        currentAudio.play().catch(() => {
-          currentAudio = null;
-          alert("音声を再生できませんでした。");
-        });
-      }
-
-      function stopAudio() {
-        if (!currentAudio) return;
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-      }
+      document.addEventListener(
+        "play",
+        (event) => {
+          const audio = event.target.closest?.(".audio-player");
+          if (!audio) return;
+          document.querySelectorAll(".audio-player").forEach((item) => {
+            if (item !== audio) item.pause();
+          });
+        },
+        true
+      );
     </script>
   </body>
 </html>
