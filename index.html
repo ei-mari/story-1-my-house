@@ -126,6 +126,37 @@
         justify-content: center;
       }
 
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 14px;
+        padding: 6px;
+        border: 1px solid rgba(18, 84, 137, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 10px 24px rgba(5, 51, 92, 0.1);
+      }
+
+      .tab-btn {
+        min-height: 46px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        color: #174c73;
+        background: transparent;
+        font-weight: 900;
+      }
+
+      .tab-btn.active {
+        color: #ffffff;
+        background: linear-gradient(180deg, #1599ec, #006dbb);
+        box-shadow: 0 8px 18px rgba(8, 87, 145, 0.2);
+      }
+
+      .tab-panel[hidden] {
+        display: none;
+      }
+
       .pill-link {
         display: inline-flex;
         align-items: center;
@@ -140,6 +171,49 @@
         font-weight: 900;
         text-decoration: none;
         box-shadow: 0 10px 24px rgba(5, 51, 92, 0.12);
+      }
+
+      .archive-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .archive-card {
+        padding: clamp(14px, 3vw, 18px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 10px 26px rgba(29, 83, 124, 0.1);
+      }
+
+      .archive-card h2 {
+        margin: 0 0 12px;
+        color: #102c48;
+        font-size: clamp(1.2rem, 3vw, 1.55rem);
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .video-frame {
+        position: relative;
+        padding-top: 66.67%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #dce9f5;
+      }
+
+      .video-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .slide-link-wrap {
+        display: flex;
+        justify-content: center;
+        margin: 18px 0 0;
       }
 
       .section {
@@ -443,55 +517,104 @@
       <section class="hero" aria-label="My House Story 1">
         <img src="./assets/story-1/story_1.png" alt="My House Story 1 thumbnail" />
       </section>
-      <div class="quick-links top-links">
-        <a class="pill-link" href="#fullStory">Full Audio</a>
-        <a class="pill-link" href="#sentences">Sentence Practice</a>
+
+      <div class="tabs" role="tablist" aria-label="Story 1 lesson tabs">
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="archivePanel" data-tab="archivePanel">
+          アーカイブ
+        </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="homeworkPanel" data-tab="homeworkPanel">
+          HOMEWORK
+        </button>
       </div>
 
-      <section id="fullStory" class="section">
-        <div class="player-strip">
-          <div class="player-copy">
-            <span class="label">STORY 1</span>
-            <h2>Listen to the whole story</h2>
-            <p>My House / True Story</p>
-          </div>
-          <div class="controls" data-audio="./audio/story-1/story1-full.mp3">
-            <audio class="audio-player" controls preload="metadata" src="./audio/story-1/story1-full.mp3"></audio>
-            <div class="speed-buttons" aria-label="再生速度">
-              <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
-              <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
-              <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
-              <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+      <section id="archivePanel" class="tab-panel section" role="tabpanel">
+        <div class="archive-grid">
+          <article class="archive-card">
+            <h2>PART 1</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1204743744?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="PART 1"></iframe>
             </div>
-          </div>
+          </article>
+
+          <article class="archive-card">
+            <h2>PART 2</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1204751668?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="PART 2"></iframe>
+            </div>
+          </article>
+
+          <article class="archive-card">
+            <h2>PART 3</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1204752900?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="PART 3"></iframe>
+            </div>
+          </article>
+
+          <article class="archive-card">
+            <h2>Q&amp;A</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1204752901?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Q&A"></iframe>
+            </div>
+          </article>
         </div>
 
-        <div class="story-text">
-          <p>
-            I (Camille) live in Portugal. Portugal is in Europe, next to Spain. I live in a
-            small city on the sea. There are many cars that drive on our street. I live in a
-            big house. It is yellow and white. My house has two floors. It has four bedrooms,
-            four bathrooms, a kitchen, and a living room. There are many windows. I like my
-            house. My house has a yard with a lot of trees. There is an orange tree. There is
-            also an avocado tree. I like to eat the fruit from the trees. The fruit is very
-            good. I like to sit outside and watch my children play. We have a small pool. In
-            this summer, my kids swim in the pool. They have fun. We have a garage, and we park
-            our car in the garage. Our car is blue. We are happy here. We like our house, our
-            yard, and our car.
-          </p>
+        <div class="slide-link-wrap">
+          <a class="pill-link" href="https://canva.link/dzhn108u8mtkvu4" target="_blank" rel="noopener">スライドはこちら</a>
         </div>
       </section>
 
-      <section id="sentences" class="section">
-        <div class="section-heading">
-          <h2>Sentence Practice</h2>
-          <span class="counter">23 sentences</span>
+      <section id="homeworkPanel" class="tab-panel" role="tabpanel" hidden>
+        <div class="quick-links top-links">
+          <a class="pill-link" href="#fullStory">Full Audio</a>
+          <a class="pill-link" href="#sentences">Sentence Practice</a>
         </div>
-        <div id="sentenceList" class="sentence-list"></div>
+
+        <section id="fullStory" class="section">
+          <div class="player-strip">
+            <div class="player-copy">
+              <span class="label">STORY 1</span>
+              <h2>Listen to the whole story</h2>
+              <p>My House / True Story</p>
+            </div>
+            <div class="controls" data-audio="./audio/story-1/story1-full.mp3">
+              <audio class="audio-player" controls preload="metadata" src="./audio/story-1/story1-full.mp3"></audio>
+              <div class="speed-buttons" aria-label="再生速度">
+                <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+                <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="story-text">
+            <p>
+              I (Camille) live in Portugal. Portugal is in Europe, next to Spain. I live in a
+              small city on the sea. There are many cars that drive on our street. I live in a
+              big house. It is yellow and white. My house has two floors. It has four bedrooms,
+              four bathrooms, a kitchen, and a living room. There are many windows. I like my
+              house. My house has a yard with a lot of trees. There is an orange tree. There is
+              also an avocado tree. I like to eat the fruit from the trees. The fruit is very
+              good. I like to sit outside and watch my children play. We have a small pool. In
+              this summer, my kids swim in the pool. They have fun. We have a garage, and we park
+              our car in the garage. Our car is blue. We are happy here. We like our house, our
+              yard, and our car.
+            </p>
+          </div>
+        </section>
+
+        <section id="sentences" class="section">
+          <div class="section-heading">
+            <h2>Sentence Practice</h2>
+            <span class="counter">23 sentences</span>
+          </div>
+          <div id="sentenceList" class="sentence-list"></div>
+        </section>
       </section>
 
       <p class="footer-note">Story 1 / My House</p>
     </main>
+    <script src="https://player.vimeo.com/api/player.js"></script>
 
     <script>
       const sentences = [
@@ -614,6 +737,22 @@
       ];
 
       const list = document.querySelector("#sentenceList");
+      const tabButtons = document.querySelectorAll(".tab-btn");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.dataset.tab;
+          document.querySelectorAll(".tab-panel").forEach((panel) => {
+            panel.hidden = panel.id !== targetId;
+          });
+          tabButtons.forEach((item) => {
+            const isActive = item === button;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", String(isActive));
+          });
+          document.querySelectorAll(".audio-player").forEach((audio) => audio.pause());
+        });
+      });
 
       sentences.forEach((item, index) => {
         const number = String(index + 1).padStart(2, "0");
