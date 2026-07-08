@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story 2 | Camille’s Family</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap");
+
+      :root {
+        --sky: #e83e85;
+        --sea: #075cac;
+        --sun: #ffd86b;
+        --leaf: #458c35;
+        --grass: #8b4bd8;
+        --ink: #172a50;
+        --muted: #5d7186;
+        --paper: #ffffff;
+        --cream: #fff8db;
+        --line: rgba(204, 45, 127, 0.18);
+        --shadow: 0 18px 42px rgba(87, 42, 122, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.9) 42%),
+          linear-gradient(135deg, #ffe2ef 0%, #fff5cc 45%, #dff1ff 100%);
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page {
+        width: min(430px, calc(100% - 20px));
+        margin: 0 auto;
+        padding: 18px 0 42px;
+      }
+
+      .hero {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: #8fdcff;
+      }
+
+      .hero img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .hero::after {
+        content: none;
+      }
+
+      .hero-bar {
+        position: absolute;
+        left: clamp(14px, 3vw, 32px);
+        right: clamp(14px, 3vw, 32px);
+        bottom: clamp(14px, 3vw, 28px);
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .title-block {
+        color: #ffffff;
+        text-shadow: 0 3px 14px rgba(0, 36, 67, 0.48);
+      }
+
+      .title-block p {
+        margin: 0 0 4px;
+        font-size: clamp(0.82rem, 2vw, 1rem);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .title-block h1 {
+        margin: 0;
+        font-size: clamp(2rem, 7vw, 5.2rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .top-links {
+        margin-top: 12px;
+        justify-content: center;
+      }
+
+      .pill-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 999px;
+        color: #083c67;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 10px 24px rgba(5, 51, 92, 0.12);
+      }
+
+      .section {
+        margin-top: 18px;
+      }
+
+      .player-strip {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: center;
+        padding: clamp(18px, 3vw, 26px);
+        border: 1px solid rgba(255, 211, 33, 0.65);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255, 245, 177, 0.96), rgba(255, 255, 255, 0.96) 52%),
+          var(--paper);
+        box-shadow: 0 14px 34px rgba(183, 130, 18, 0.14);
+      }
+
+      .player-copy {
+        min-width: 0;
+      }
+
+      .label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #0d79c8;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+
+      .player-copy h2 {
+        margin: 10px 0 6px;
+        font-size: clamp(1.5rem, 4vw, 2.3rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .player-copy p {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 800;
+        line-height: 1.6;
+      }
+
+      .controls {
+        display: grid;
+        gap: 10px;
+      }
+
+      .audio-player {
+        width: 100%;
+        height: 42px;
+      }
+
+      .speed-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+
+      .speed-btn {
+        min-height: 44px;
+        border: 1px solid #c9def3;
+        border-radius: 999px;
+        background: #f7fbff;
+        color: #164b6d;
+        font-weight: 900;
+        box-shadow: 0 6px 14px rgba(12, 95, 152, 0.08);
+      }
+
+      .speed-btn.active {
+        border-color: #1479c9;
+        color: #ffffff;
+        background: linear-gradient(180deg, #1599ec, #006dbb);
+      }
+
+      .story-text {
+        margin-top: 12px;
+        padding: clamp(18px, 3vw, 28px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 28px rgba(35, 92, 135, 0.1);
+      }
+
+      .story-text p {
+        margin: 0;
+        color: #17334f;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.03rem, 2.4vw, 1.2rem);
+        line-height: 1.85;
+        font-weight: 600;
+      }
+
+      .section-heading {
+        margin: 30px 0 12px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 4vw, 2.1rem);
+        line-height: 1.1;
+        letter-spacing: 0;
+      }
+
+      .counter {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .sentence-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .sentence-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        padding: clamp(14px, 3vw, 20px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 8px 22px rgba(29, 83, 124, 0.08);
+      }
+
+      .number {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient(180deg, var(--grass), var(--leaf));
+        font-weight: 900;
+        box-shadow: 0 8px 16px rgba(20, 122, 56, 0.2);
+      }
+
+      .sentence-body {
+        min-width: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .sentence {
+        margin: 0;
+        color: #102c48;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.1rem, 3vw, 1.34rem);
+        line-height: 1.55;
+        font-weight: 700;
+      }
+
+      .ipa {
+        margin: 0;
+        color: #164b6d;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: clamp(1.02rem, 2.5vw, 1.12rem);
+        line-height: 1.7;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+
+      .meaning {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 800;
+        line-height: 1.6;
+      }
+
+      .note {
+        margin: 0;
+        padding: 10px 12px;
+        border: 1px solid #ffe3a1;
+        border-radius: 8px;
+        background: #fff8df;
+        color: #7a5411;
+        font-family: "Arimo", "Arial", "Helvetica Neue", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        font-weight: 700;
+      }
+
+      .note.hidden {
+        display: none;
+      }
+
+      .sentence-actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .sentence-actions .audio-player {
+        height: 38px;
+      }
+
+      .sentence-actions .speed-btn {
+        min-height: 36px;
+        font-size: 0.88rem;
+      }
+
+      .detail-panel {
+        border: 1px solid #dce9f5;
+        border-radius: 8px;
+        background: #f8fcff;
+        overflow: hidden;
+      }
+
+      .detail-panel summary {
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        padding: 9px 12px;
+        color: #174c73;
+        font-size: 0.92rem;
+        font-weight: 900;
+        list-style: none;
+        cursor: pointer;
+      }
+
+      .detail-panel summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .detail-panel summary::after {
+        content: "+";
+        margin-left: auto;
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #e5f2ff;
+        color: #0f6fb8;
+      }
+
+      .detail-panel[open] summary::after {
+        content: "-";
+      }
+
+      .detail-content {
+        padding: 0 12px 12px;
+      }
+
+      .footer-note {
+        margin: 20px 0 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          width: min(100% - 20px, 560px);
+          padding-top: 10px;
+        }
+
+        .hero {
+          aspect-ratio: 16 / 9;
+        }
+
+        .hero img {
+          object-position: center;
+        }
+
+        .hero-bar,
+        .sentence-card {
+          grid-template-columns: 1fr;
+        }
+
+        .quick-links {
+          width: 100%;
+        }
+
+        .pill-link {
+          flex: 1 1 auto;
+        }
+
+        .section-heading {
+          align-items: start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero" aria-label="Camille’s Family Story 2">
+        <img src="./assets/story-2/camile.png" alt="Camille’s Family Story 2 thumbnail" />
+      </section>
+      <div class="quick-links top-links">
+        <a class="pill-link" href="#fullStory">Full Audio</a>
+        <a class="pill-link" href="#sentences">Sentence Practice</a>
+      </div>
+
+      <section id="fullStory" class="section">
+        <div class="player-strip">
+          <div class="player-copy">
+            <span class="label">STORY 2</span>
+            <h2>Listen to the whole story</h2>
+            <p>Camille’s Family / True Story</p>
+          </div>
+          <div class="controls" data-audio="./audio/story-2/story2-full.mp3">
+            <audio class="audio-player" controls preload="metadata" src="./audio/story-2/story2-full.mp3"></audio>
+            <div class="speed-buttons" aria-label="再生速度">
+              <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+              <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+              <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+              <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-text">
+          <p>
+            My name is Camille. I am married. My husband’s name is Calvin. I am his wife. We
+            have three children. Their names are Maddox, Ivory, and Kairo. Maddox is ten years
+            old, Ivory is seven years old, and Kairo is five years old. Maddox is the oldest
+            child. Ivory is the middle child. Kairo is the youngest child. We call the youngest
+            child “the baby.” Maddox and Kairo are boys. They are brothers. Ivory is a girl.
+            She is Maddox and Kairo’s sister. Maddox and Kairo are Ivory’s brothers. Maddox,
+            Ivory, and Kairo are siblings. My parents are named Tom and Helen. Helen is my
+            mother. Tom is my father. I am their daughter. Helen is my kids’ grandmother
+            (grandma). Tom is my kids’ grandfather (grandpa). They are my children’s
+            grandparents. They love my children. My children love their grandparents.
+          </p>
+        </div>
+      </section>
+
+      <section id="sentences" class="section">
+        <div class="section-heading">
+          <h2>Sentence Practice</h2>
+          <span class="counter">30 cards</span>
+        </div>
+        <div id="sentenceList" class="sentence-list"></div>
+      </section>
+
+      <p class="footer-note">Story 2 / Camille’s Family</p>
+    </main>
+
+    <script>
+      const sentences = [
+        { text: "My name is Camille.", ipa: "/maɪ neɪm ɪz kəˈmil/", meaning: "私の名前はカミールです。" },
+        { text: "I am married.", ipa: "/aɪ æm ˈmærid/", meaning: "私は結婚しています。" },
+        { text: "My husband’s name is Calvin.", ipa: "/maɪ ˈhʌzbəndz neɪm ɪz ˈkælvɪn/", meaning: "夫の名前はカルヴィンです。" },
+        { text: "I am his wife.", ipa: "/aɪ æm hɪz waɪf/", meaning: "私は彼の妻です。" },
+        { text: "We have three children.", ipa: "/wi hæv θri ˈtʃɪldrən/", meaning: "私たちには3人の子どもがいます。" },
+        { text: "Their names are Maddox, Ivory, and Kairo.", ipa: "/ðɛr neɪmz ɑr ˈmædəks, ˈaɪvəri, ənd ˈkaɪroʊ/", meaning: "子どもたちの名前はマドックス、アイヴォリー、カイロです。" },
+        { text: "Maddox is ten years old.", ipa: "/ˈmædəks ɪz tɛn jɪrz oʊld/", meaning: "マドックスは10歳です。" },
+        { text: "Ivory is seven years old.", ipa: "/ˈaɪvəri ɪz ˈsɛvən jɪrz oʊld/", meaning: "アイヴォリーは7歳です。" },
+        { text: "Kairo is five years old.", ipa: "/ˈkaɪroʊ ɪz faɪv jɪrz oʊld/", meaning: "カイロは5歳です。" },
+        { text: "Maddox is the oldest child.", ipa: "/ˈmædəks ɪz ði ˈoʊldəst tʃaɪld/", meaning: "マドックスはいちばん年上の子です。" },
+        { text: "Ivory is the middle child.", ipa: "/ˈaɪvəri ɪz ðə ˈmɪdəl tʃaɪld/", meaning: "アイヴォリーは真ん中の子です。" },
+        { text: "Kairo is the youngest child.", ipa: "/ˈkaɪroʊ ɪz ðə ˈjʌŋɡəst tʃaɪld/", meaning: "カイロはいちばん年下の子です。" },
+        { text: "We call the youngest child “the baby.”", ipa: "/wi kɔl ðə ˈjʌŋɡəst tʃaɪld ðə ˈbeɪbi/", meaning: "私たちはいちばん年下の子を「赤ちゃん」と呼びます。" },
+        { text: "Maddox and Kairo are boys.", ipa: "/ˈmædəks ənd ˈkaɪroʊ ɑr bɔɪz/", meaning: "マドックスとカイロは男の子です。" },
+        { text: "They are brothers.", ipa: "/ðeɪ ɑr ˈbrʌðɚz/", meaning: "彼らは兄弟です。" },
+        { text: "Ivory is a girl.", ipa: "/ˈaɪvəri ɪz ə ɡɝl/", meaning: "アイヴォリーは女の子です。" },
+        { text: "She is Maddox and Kairo’s sister.", ipa: "/ʃi ɪz ˈmædəks ənd ˈkaɪroʊz ˈsɪstɚ/", meaning: "彼女はマドックスとカイロの姉妹です。" },
+        { text: "Maddox and Kairo are Ivory’s brothers.", ipa: "/ˈmædəks ənd ˈkaɪroʊ ɑr ˈaɪvəriz ˈbrʌðɚz/", meaning: "マドックスとカイロはアイヴォリーの兄弟です。" },
+        { text: "Maddox, Ivory, and Kairo are siblings.", ipa: "/ˈmædəks, ˈaɪvəri, ənd ˈkaɪroʊ ɑr ˈsɪblɪŋz/", meaning: "マドックス、アイヴォリー、カイロはきょうだいです。" },
+        { text: "My parents are named Tom and Helen.", ipa: "/maɪ ˈpɛrənts ɑr neɪmd tɑm ənd ˈhɛlən/", meaning: "私の両親の名前はトムとヘレンです。" },
+        { text: "Helen is my mother.", ipa: "/ˈhɛlən ɪz maɪ ˈmʌðɚ/", meaning: "ヘレンは私の母です。" },
+        { text: "Tom is my father.", ipa: "/tɑm ɪz maɪ ˈfɑðɚ/", meaning: "トムは私の父です。" },
+        { text: "I am their daughter.", ipa: "/aɪ æm ðɛr ˈdɔtɚ/", meaning: "私は彼らの娘です。" },
+        { text: "Helen is my kids’ grandmother.", ipa: "/ˈhɛlən ɪz maɪ kɪdz ˈɡrændˌmʌðɚ/", meaning: "ヘレンは私の子どもたちの祖母です。" },
+        { text: "Grandma.", ipa: "/ˈɡrændˌmɑ/", meaning: "おばあちゃん。" },
+        { text: "Tom is my kids’ grandfather.", ipa: "/tɑm ɪz maɪ kɪdz ˈɡrændˌfɑðɚ/", meaning: "トムは私の子どもたちの祖父です。" },
+        { text: "Grandpa.", ipa: "/ˈɡrændˌpɑ/", meaning: "おじいちゃん。" },
+        { text: "They are my children’s grandparents.", ipa: "/ðeɪ ɑr maɪ ˈtʃɪldrənz ˈɡrændˌpɛrənts/", meaning: "彼らは私の子どもたちの祖父母です。" },
+        { text: "They love my children.", ipa: "/ðeɪ lʌv maɪ ˈtʃɪldrən/", meaning: "彼らは私の子どもたちを愛しています。" },
+        { text: "My children love their grandparents.", ipa: "/maɪ ˈtʃɪldrən lʌv ðɛr ˈɡrændˌpɛrənts/", meaning: "私の子どもたちは祖父母を愛しています。" },
+      ];
+
+      const list = document.querySelector("#sentenceList");
+
+      sentences.forEach((item, index) => {
+        const number = String(index + 1).padStart(2, "0");
+        const card = document.createElement("article");
+        card.className = "sentence-card";
+        card.innerHTML = `
+          <div class="number">${number}</div>
+          <div class="sentence-body">
+            <p class="sentence"></p>
+            <div class="sentence-actions" data-audio="./audio/story-2/story2-${number}.mp3">
+              <audio class="audio-player" controls preload="metadata" src="./audio/story-2/story2-${number}.mp3"></audio>
+              <div class="speed-buttons" aria-label="再生速度">
+                <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+                <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                <button class="speed-btn" type="button" data-rate="0.25">0.25x</button>
+              </div>
+            </div>
+            <details class="detail-panel">
+              <summary>発音記号を表示する</summary>
+              <div class="detail-content">
+                <p class="ipa"></p>
+              </div>
+            </details>
+            <details class="detail-panel">
+              <summary>日本語を表示する</summary>
+              <div class="detail-content">
+                <p class="meaning"></p>
+              </div>
+            </details>
+            <p class="note hidden"></p>
+          </div>
+        `;
+        card.querySelector(".sentence").textContent = item.text;
+        card.querySelector(".ipa").textContent = item.ipa;
+        card.querySelector(".meaning").textContent = item.meaning;
+        const note = card.querySelector(".note");
+        if (item.note) {
+          note.textContent = item.note;
+          note.classList.remove("hidden");
+        }
+        list.appendChild(card);
+      });
+
+      document.addEventListener("click", (event) => {
+        const speedButton = event.target.closest(".speed-btn");
+        if (!speedButton) return;
+
+        const controls = speedButton.closest("[data-audio]");
+        const audio = controls?.querySelector(".audio-player");
+        if (!audio) return;
+
+        const rate = Number(speedButton.dataset.rate || 1);
+        audio.playbackRate = Number.isFinite(rate) ? rate : 1;
+        controls.querySelectorAll(".speed-btn").forEach((button) => {
+          button.classList.toggle("active", button === speedButton);
+        });
+      });
+
+      document.addEventListener(
+        "play",
+        (event) => {
+          const audio = event.target.closest?.(".audio-player");
+          if (!audio) return;
+          document.querySelectorAll(".audio-player").forEach((item) => {
+            if (item !== audio) item.pause();
+          });
+        },
+        true
+      );
+    </script>
+  </body>
+</html>
