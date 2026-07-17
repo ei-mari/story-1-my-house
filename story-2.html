@@ -126,6 +126,87 @@
         justify-content: center;
       }
 
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 14px;
+        padding: 6px;
+        border: 1px solid rgba(18, 84, 137, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 10px 24px rgba(5, 51, 92, 0.1);
+      }
+
+      .tab-btn {
+        min-height: 46px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        color: #174c73;
+        background: transparent;
+        font-weight: 900;
+      }
+
+      .tab-btn.active {
+        color: #ffffff;
+        background: linear-gradient(180deg, #e83e85, #bd2868);
+        box-shadow: 0 8px 18px rgba(189, 40, 104, 0.22);
+      }
+
+      .tab-panel[hidden] {
+        display: none;
+      }
+
+      .archive-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .archive-card {
+        padding: clamp(14px, 3vw, 18px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 10px 26px rgba(87, 42, 122, 0.12);
+      }
+
+      .archive-card h2 {
+        margin: 0 0 12px;
+        color: #102c48;
+        font-size: clamp(1.2rem, 3vw, 1.55rem);
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .video-frame {
+        position: relative;
+        padding-top: 64.63%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #dce9f5;
+      }
+
+      .video-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .archive-note {
+        margin: 14px 0 0;
+        padding: 13px 14px;
+        border: 1px solid rgba(204, 45, 127, 0.2);
+        border-radius: 8px;
+        color: #6b3153;
+        background: #fff4f8;
+        text-align: center;
+        font-size: 0.92rem;
+        font-weight: 800;
+        line-height: 1.6;
+      }
+
       .pill-link {
         display: inline-flex;
         align-items: center;
@@ -443,10 +524,40 @@
       <section class="hero" aria-label="Camille’s Family Story 2">
         <img src="./assets/story-2/camile.png" alt="Camille’s Family Story 2 thumbnail" />
       </section>
-      <div class="quick-links top-links">
-        <a class="pill-link" href="#fullStory">Full Audio</a>
-        <a class="pill-link" href="#sentences">Sentence Practice</a>
+
+      <div class="tabs" role="tablist" aria-label="Story 2 lesson tabs">
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="archivePanel" data-tab="archivePanel">
+          アーカイブ
+        </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="homeworkPanel" data-tab="homeworkPanel">
+          HOMEWORK
+        </button>
       </div>
+
+      <section id="archivePanel" class="tab-panel section" role="tabpanel">
+        <div class="archive-grid">
+          <article class="archive-card">
+            <h2>PART 1</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1210677382?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Story 2 Part 1"></iframe>
+            </div>
+          </article>
+
+          <article class="archive-card">
+            <h2>PART 2</h2>
+            <div class="video-frame">
+              <iframe src="https://player.vimeo.com/video/1210677383?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Story 2 Part 2"></iframe>
+            </div>
+          </article>
+        </div>
+        <p class="archive-note">パスワードはSlackのご案内をご確認ください。</p>
+      </section>
+
+      <section id="homeworkPanel" class="tab-panel" role="tabpanel" hidden>
+        <div class="quick-links top-links">
+          <a class="pill-link" href="#fullStory">Full Audio</a>
+          <a class="pill-link" href="#sentences">Sentence Practice</a>
+        </div>
 
       <section id="fullStory" class="section">
         <div class="player-strip">
@@ -489,6 +600,7 @@
         </div>
         <div id="sentenceList" class="sentence-list"></div>
       </section>
+      </section>
 
       <p class="footer-note">Story 2 / Camille’s Family</p>
     </main>
@@ -528,6 +640,22 @@
       ];
 
       const list = document.querySelector("#sentenceList");
+      const tabButtons = document.querySelectorAll(".tab-btn");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.dataset.tab;
+          document.querySelectorAll(".tab-panel").forEach((panel) => {
+            panel.hidden = panel.id !== targetId;
+          });
+          tabButtons.forEach((item) => {
+            const isActive = item === button;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", String(isActive));
+          });
+          document.querySelectorAll(".audio-player").forEach((audio) => audio.pause());
+        });
+      });
 
       sentences.forEach((item, index) => {
         const number = String(index + 1).padStart(2, "0");
