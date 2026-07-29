@@ -288,6 +288,14 @@
         margin-top: 3px;
       }
 
+      .practice-guide .guide-note {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 600;
+        line-height: 1.55;
+      }
+
       .section-heading {
         display: flex;
         align-items: end;
@@ -458,8 +466,8 @@
         <button class="tab-btn" type="button" role="tab" aria-selected="false" data-story="story2">STORY 2</button>
       </nav>
 
-      <section id="story1Panel" class="story-panel" data-story="story1" role="tabpanel"></section>
-      <section id="story2Panel" class="story-panel" data-story="story2" role="tabpanel" hidden></section>
+      <section id="story1Panel" class="story-panel hide-rhythm hide-linking" data-story="story1" role="tabpanel"></section>
+      <section id="story2Panel" class="story-panel hide-rhythm hide-linking" data-story="story2" role="tabpanel" hidden></section>
 
       <p class="footer-note">Story Review / Rhythm &amp; Linking</p>
     </main>
@@ -744,10 +752,11 @@
           <div class="practice-guide">
             <p>Rhythm を押すと内容語（の強勢音節）が青く目立ちます。</p>
             <p>Linking を押すとリンキングの目安が表示されます。</p>
+            <p class="guide-note">※音声をベースにリンキングのマークは表示しております。表示していないけれどリンキングできる部分もございます。</p>
           </div>
           <div class="cue-toolbar" aria-label="発音ヒントの表示切り替え">
-            <button class="cue-toggle active" type="button" data-cue="rhythm" aria-pressed="true">Rhythm</button>
-            <button class="cue-toggle active" type="button" data-cue="linking" aria-pressed="true">Linking</button>
+            <button class="cue-toggle" type="button" data-cue="rhythm" aria-pressed="false">Rhythm</button>
+            <button class="cue-toggle" type="button" data-cue="linking" aria-pressed="false">Linking</button>
           </div>
           <div class="sentence-list"></div>
         `;
