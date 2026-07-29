@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Story Review | Rhythm & Linking</title>
+    <title>Story Review | Rhythm</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;600;700&display=swap");
 
@@ -248,7 +248,7 @@
 
       .cue-toolbar {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 8px;
         margin: 10px 0 12px;
       }
@@ -286,14 +286,6 @@
 
       .practice-guide p + p {
         margin-top: 3px;
-      }
-
-      .practice-guide .guide-note {
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 0.76rem;
-        font-weight: 600;
-        line-height: 1.55;
       }
 
       .section-heading {
@@ -419,21 +411,9 @@
         font-weight: 700;
       }
 
-      .link-mark {
-        display: inline-block;
-        min-width: 0.75em;
-        color: var(--green);
-        text-align: center;
-        font-weight: 700;
-      }
-
       .story-panel.hide-rhythm .stress-word {
         color: inherit;
         font-weight: inherit;
-      }
-
-      .story-panel.hide-linking .link-mark {
-        color: transparent;
       }
 
       .footer-note {
@@ -452,13 +432,13 @@
         <img src="./assets/story-2/camile.png" alt="Story 2 Camille’s Family" />
         <div class="cover-title">
           <p>STORY 1 + STORY 2</p>
-          <h1>Rhythm &amp; Linking Review</h1>
+          <h1>Rhythm Review</h1>
         </div>
       </section>
 
       <section class="mission">
-        <strong>リズムとリンキングを意識して練習しよう</strong>
-        <p>強く読む語でリズムを作り、音のつながりを切らずに真似してみましょう。</p>
+        <strong>英語のリズムを意識して練習しよう</strong>
+        <p>内容語の強勢音節を意識しながら、音声のリズムを真似してみましょう。</p>
       </section>
 
       <nav class="tabs" role="tablist" aria-label="Story review tabs">
@@ -466,10 +446,10 @@
         <button class="tab-btn" type="button" role="tab" aria-selected="false" data-story="story2">STORY 2</button>
       </nav>
 
-      <section id="story1Panel" class="story-panel hide-rhythm hide-linking" data-story="story1" role="tabpanel"></section>
-      <section id="story2Panel" class="story-panel hide-rhythm hide-linking" data-story="story2" role="tabpanel" hidden></section>
+      <section id="story1Panel" class="story-panel hide-rhythm" data-story="story1" role="tabpanel"></section>
+      <section id="story2Panel" class="story-panel hide-rhythm" data-story="story2" role="tabpanel" hidden></section>
 
-      <p class="footer-note">Story Review / Rhythm &amp; Linking</p>
+      <p class="footer-note">Story Review / Rhythm</p>
     </main>
 
     <script>
@@ -655,18 +635,8 @@
         grandpa: [0, 5],
         grandparents: [0, 5],
       };
-      const vowel = /^[aeiou]/i;
-      const vowelEnd = /[aeiouy]$/i;
-
       function cleanWord(word) {
         return word.toLowerCase().replace(/[^a-z’']/g, "");
-      }
-
-      function shouldLink(left, right) {
-        const a = cleanWord(left);
-        const b = cleanWord(right);
-        if (!a || !b) return false;
-        return vowel.test(b) || (vowelEnd.test(a) && vowel.test(b));
       }
 
       function renderStressedWord(word, sentence) {
@@ -686,62 +656,8 @@
 
       function renderPracticeText(sentence) {
         const parts = sentence.match(/[A-Za-z]+(?:[’'][A-Za-z]+)?|[^A-Za-z]+/g) || [sentence];
-        const wordIndexes = parts.map((part, index) => (/^[A-Za-z]/.test(part) ? index : -1)).filter((index) => index >= 0);
-        return parts.map((part, index) => {
-          if (!/^[A-Za-z]/.test(part)) {
-            const previousWordIndex = [...wordIndexes].reverse().find((item) => item < index);
-            const nextWordIndex = wordIndexes.find((item) => item > index);
-            const isSpace = /^\s+$/.test(part);
-            const skipLink = previousWordIndex !== undefined
-              && nextWordIndex !== undefined
-              && (
-                (sentence === "I live in Portugal."
-                  && cleanWord(parts[previousWordIndex]) === "live"
-                  && cleanWord(parts[nextWordIndex]) === "in")
-                || (sentence === "I live in a big house."
-                  && cleanWord(parts[previousWordIndex]) === "live"
-                  && cleanWord(parts[nextWordIndex]) === "in")
-                || (sentence === "Portugal is in Europe, next to Spain."
-                  && cleanWord(parts[previousWordIndex]) === "portugal"
-                  && cleanWord(parts[nextWordIndex]) === "is")
-                || (sentence === "It is yellow and white."
-                  && cleanWord(parts[previousWordIndex]) === "yellow"
-                  && cleanWord(parts[nextWordIndex]) === "and")
-                || (sentence === "There is also an avocado tree."
-                  && (
-                    (cleanWord(parts[previousWordIndex]) === "also"
-                      && cleanWord(parts[nextWordIndex]) === "an")
-                    || (cleanWord(parts[previousWordIndex]) === "an"
-                      && cleanWord(parts[nextWordIndex]) === "avocado")
-                  ))
-                || (sentence === "I like to eat the fruit from the trees."
-                  && cleanWord(parts[previousWordIndex]) === "to"
-                  && cleanWord(parts[nextWordIndex]) === "eat")
-                || (sentence === "My husband’s name is Calvin."
-                  && cleanWord(parts[previousWordIndex]) === "name"
-                  && cleanWord(parts[nextWordIndex]) === "is")
-                || (sentence === "Maddox is ten years old."
-                  && cleanWord(parts[previousWordIndex]) === "maddox"
-                  && cleanWord(parts[nextWordIndex]) === "is")
-                || (sentence === "Maddox is the oldest child."
-                  && cleanWord(parts[previousWordIndex]) === "maddox"
-                  && cleanWord(parts[nextWordIndex]) === "is")
-              );
-            const forceLink = previousWordIndex !== undefined
-              && nextWordIndex !== undefined
-              && (
-                (sentence === "Maddox is ten years old."
-                  && cleanWord(parts[previousWordIndex]) === "ten"
-                  && cleanWord(parts[nextWordIndex]) === "years")
-                || (sentence === "Ivory is seven years old."
-                  && cleanWord(parts[previousWordIndex]) === "seven"
-                  && cleanWord(parts[nextWordIndex]) === "years")
-              );
-            if (isSpace && !skipLink && previousWordIndex !== undefined && nextWordIndex !== undefined && (forceLink || shouldLink(parts[previousWordIndex], parts[nextWordIndex]))) {
-              return '<span class="link-mark" aria-label="link">‿</span>';
-            }
-            return part;
-          }
+        return parts.map((part) => {
+          if (!/^[A-Za-z]/.test(part)) return part;
           return renderStressedWord(part, sentence);
         }).join("");
       }
@@ -769,13 +685,10 @@
             <span class="counter">${story.sentences.length} sentences</span>
           </div>
           <div class="practice-guide">
-            <p>Rhythm を押すと内容語（の強勢音節）が青く目立ちます。</p>
-            <p>Linking を押すとリンキングの目安が表示されます。</p>
-            <p class="guide-note">※音声をベースにリンキングのマークは表示しております。表示していないけれどリンキングできる部分もございます。</p>
+            <p>ボタンを押すと内容語（の強勢音節）が青く目立ちます。</p>
           </div>
-          <div class="cue-toolbar" aria-label="発音ヒントの表示切り替え">
-            <button class="cue-toggle" type="button" data-cue="rhythm" aria-pressed="false">Rhythm</button>
-            <button class="cue-toggle" type="button" data-cue="linking" aria-pressed="false">Linking</button>
+          <div class="cue-toolbar" aria-label="内容語の表示切り替え">
+            <button class="cue-toggle" type="button" data-cue="rhythm" aria-pressed="false">内容語をONにする</button>
           </div>
           <div class="sentence-list"></div>
         `;
@@ -839,6 +752,7 @@
           const active = !cue.classList.contains("active");
           cue.classList.toggle("active", active);
           cue.setAttribute("aria-pressed", String(active));
+          cue.textContent = active ? "内容語をOFFにする" : "内容語をONにする";
           panel.classList.toggle(`hide-${cue.dataset.cue}`, !active);
           return;
         }
