@@ -661,7 +661,7 @@
               <div><p>${story.eyebrow}</p><h2>${story.title}</h2></div>
               <span class="duration">${story.duration}</span>
             </div>
-            <audio controls preload="metadata" src="${story.audio}"></audio>
+            <audio class="main-audio" controls preload="metadata" src="${story.audio}"></audio>
             <div class="speed-buttons" aria-label="再生速度">
               <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
               <button class="speed-btn" type="button" data-rate="0.85">0.85x</button>
@@ -690,6 +690,7 @@
           card.className = "sentence-card";
           card.innerHTML = `
             <button class="play-sentence" type="button" aria-label="文${index + 1}を再生" aria-pressed="false">▶</button>
+            <audio class="sentence-audio" preload="none" src="./audio/review/${key}/${String(index + 1).padStart(2, "0")}.mp3" hidden></audio>
             <div class="sentence-copy">
               <span class="sentence-number">${String(index + 1).padStart(2, "0")}</span>
               <p class="practice-text">${renderPracticeText(sentence)}</p>
@@ -699,8 +700,6 @@
               </details>
             </div>
           `;
-          card.querySelector(".play-sentence").dataset.start = story.timings[index][0];
-          card.querySelector(".play-sentence").dataset.end = story.timings[index][1];
           list.appendChild(card);
         });
       }
@@ -713,7 +712,7 @@
       function stopSentence() {
         if (!activeStop) return;
         const { audio, handler, button, card } = activeStop;
-        audio.removeEventListener("timeupdate", handler);
+        audio.removeEventListener("ended", handler);
         button.setAttribute("aria-pressed", "false");
         button.textContent = "▶";
         card.classList.remove("playing");
@@ -740,7 +739,7 @@
         const speed = event.target.closest(".speed-btn");
         if (speed) {
           const panel = speed.closest(".story-panel");
-          panel.querySelector("audio").playbackRate = Number(speed.dataset.rate);
+          panel.querySelector(".main-audio").playbackRate = Number(speed.dataset.rate);
           panel.querySelectorAll(".speed-btn").forEach((button) => button.classList.toggle("active", button === speed));
           return;
         }
@@ -759,8 +758,9 @@
         const play = event.target.closest(".play-sentence");
         if (play) {
           const panel = play.closest(".story-panel");
-          const audio = panel.querySelector("audio");
           const card = play.closest(".sentence-card");
+          const audio = card.querySelector(".sentence-audio");
+          const mainAudio = panel.querySelector(".main-audio");
           if (activeStop?.button === play) {
             audio.pause();
             stopSentence();
@@ -770,16 +770,11 @@
           document.querySelectorAll("audio").forEach((item) => {
             if (item !== audio) item.pause();
           });
-          const end = Number(play.dataset.end);
-          const handler = () => {
-            if (audio.currentTime >= end) {
-              audio.pause();
-              stopSentence();
-            }
-          };
+          const handler = () => stopSentence();
           activeStop = { audio, handler, button: play, card };
-          audio.currentTime = Number(play.dataset.start);
-          audio.addEventListener("timeupdate", handler);
+          audio.currentTime = 0;
+          audio.playbackRate = mainAudio.playbackRate;
+          audio.addEventListener("ended", handler);
           play.setAttribute("aria-pressed", "true");
           play.textContent = "■";
           card.classList.add("playing");
