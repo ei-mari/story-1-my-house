@@ -659,7 +659,12 @@
             const previousWordIndex = [...wordIndexes].reverse().find((item) => item < index);
             const nextWordIndex = wordIndexes.find((item) => item > index);
             const isSpace = /^\s+$/.test(part);
-            if (isSpace && previousWordIndex !== undefined && nextWordIndex !== undefined && shouldLink(parts[previousWordIndex], parts[nextWordIndex])) {
+            const skipLiveIn = previousWordIndex !== undefined
+              && nextWordIndex !== undefined
+              && sentence === "I live in Portugal."
+              && cleanWord(parts[previousWordIndex]) === "live"
+              && cleanWord(parts[nextWordIndex]) === "in";
+            if (isSpace && !skipLiveIn && previousWordIndex !== undefined && nextWordIndex !== undefined && shouldLink(parts[previousWordIndex], parts[nextWordIndex])) {
               return '<span class="link-mark" aria-label="link">‿</span>';
             }
             return part;
