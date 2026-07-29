@@ -225,7 +225,7 @@
 
       .speed-buttons {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 7px;
         margin-top: 9px;
       }
@@ -268,27 +268,6 @@
         background: color-mix(in srgb, var(--accent) 8%, white);
       }
 
-      .legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px 14px;
-        margin-top: 12px;
-        color: var(--muted);
-        font-family: "Arimo", Arial, sans-serif;
-        font-size: 0.82rem;
-        font-weight: 700;
-      }
-
-      .legend .sample-stress {
-        color: var(--accent);
-        font-weight: 700;
-      }
-
-      .legend .sample-link {
-        color: var(--green);
-        font-weight: 700;
-      }
-
       .section-heading {
         display: flex;
         align-items: end;
@@ -315,39 +294,11 @@
       }
 
       .sentence-card {
-        display: grid;
-        grid-template-columns: 42px minmax(0, 1fr);
-        gap: 12px;
-        align-items: start;
         padding: 14px;
         border: 1px solid var(--line);
-        border-left: 4px solid transparent;
         border-radius: 8px;
         background: #ffffff;
         box-shadow: 0 7px 18px rgba(30, 65, 99, 0.07);
-      }
-
-      .sentence-card.playing {
-        border-left-color: var(--accent);
-        background: color-mix(in srgb, var(--accent) 4%, white);
-      }
-
-      .play-sentence {
-        display: grid;
-        place-items: center;
-        width: 42px;
-        height: 42px;
-        padding: 0;
-        border: 0;
-        border-radius: 50%;
-        color: #ffffff;
-        background: var(--accent);
-        font-size: 0.84rem;
-        box-shadow: 0 6px 14px color-mix(in srgb, var(--accent) 25%, transparent);
-      }
-
-      .play-sentence[aria-pressed="true"] {
-        background: #253d59;
       }
 
       .sentence-copy {
@@ -413,6 +364,16 @@
         font-size: 1.02rem;
         line-height: 1.7;
         overflow-wrap: anywhere;
+      }
+
+      .sentence-player {
+        margin-top: 12px;
+        padding-top: 11px;
+        border-top: 1px solid #e3ebf1;
+      }
+
+      .sentence-player .speed-btn {
+        min-height: 36px;
       }
 
       .practice-text {
@@ -618,8 +579,54 @@
       const functionWords = new Set([
         "a", "am", "an", "and", "are", "as", "at", "be", "from", "has", "have", "his",
         "i", "in", "is", "it", "my", "of", "on", "our", "she", "that", "the", "their",
-        "they", "this", "to", "we", "with",
+        "there", "they", "this", "to", "we", "with",
       ]);
+      const stressedSyllables = {
+        portugal: [0, 3],
+        europe: [0, 2],
+        city: [0, 2],
+        many: [0, 2],
+        yellow: [0, 3],
+        bedrooms: [0, 3],
+        bathrooms: [0, 4],
+        kitchen: [0, 3],
+        living: [0, 3],
+        windows: [0, 3],
+        orange: [0, 2],
+        also: [0, 2],
+        avocado: [3, 5],
+        very: [0, 2],
+        outside: [3, 7],
+        children: [0, 4],
+        summer: [0, 3],
+        garage: [2, 6],
+        happy: [0, 3],
+        camille: [2, 7],
+        married: [0, 3],
+        husband: [0, 3],
+        calvin: [0, 3],
+        maddox: [0, 3],
+        ivory: [0, 1],
+        kairo: [0, 3],
+        seven: [0, 3],
+        oldest: [0, 3],
+        middle: [0, 3],
+        youngest: [0, 5],
+        baby: [0, 2],
+        brothers: [0, 3],
+        sister: [0, 3],
+        siblings: [0, 3],
+        parents: [0, 3],
+        helen: [0, 3],
+        mother: [0, 4],
+        father: [0, 4],
+        daughter: [0, 5],
+        grandmother: [0, 5],
+        grandma: [0, 5],
+        grandfather: [0, 5],
+        grandpa: [0, 5],
+        grandparents: [0, 5],
+      };
       const vowel = /^[aeiou]/i;
       const vowelEnd = /[aeiouy]$/i;
 
@@ -632,6 +639,16 @@
         const b = cleanWord(right);
         if (!a || !b) return false;
         return vowel.test(b) || (vowelEnd.test(a) && vowel.test(b));
+      }
+
+      function renderStressedWord(word) {
+        const cleaned = cleanWord(word);
+        const base = cleaned.replace(/[’']s$/, "");
+        if (functionWords.has(cleaned) || functionWords.has(base)) return word;
+        const range = stressedSyllables[base] || [0, base.length];
+        const possessiveLength = cleaned.length - base.length;
+        const end = Math.min(range[1], word.length - possessiveLength);
+        return `${word.slice(0, range[0])}<span class="stress-word">${word.slice(range[0], end)}</span>${word.slice(end)}`;
       }
 
       function renderPracticeText(sentence) {
@@ -647,8 +664,7 @@
             }
             return part;
           }
-          const stressed = !functionWords.has(cleanWord(part));
-          return stressed ? `<span class="stress-word">${part}</span>` : part;
+          return renderStressedWord(part);
         }).join("");
       }
 
@@ -661,20 +677,17 @@
               <div><p>${story.eyebrow}</p><h2>${story.title}</h2></div>
               <span class="duration">${story.duration}</span>
             </div>
-            <audio class="main-audio" controls preload="metadata" src="${story.audio}"></audio>
-            <div class="speed-buttons" aria-label="再生速度">
-              <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
-              <button class="speed-btn" type="button" data-rate="0.85">0.85x</button>
-              <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
-              <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+            <div class="audio-tools">
+              <audio class="main-audio" controls preload="metadata" src="${story.audio}"></audio>
+              <div class="speed-buttons" aria-label="再生速度">
+                <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+              </div>
             </div>
             <div class="cue-toolbar">
               <button class="cue-toggle active" type="button" data-cue="rhythm" aria-pressed="true">Rhythm ON</button>
               <button class="cue-toggle active" type="button" data-cue="linking" aria-pressed="true">Linking ON</button>
-            </div>
-            <div class="legend">
-              <span><span class="sample-stress">Color + Bold</span> = 強く読む語</span>
-              <span><span class="sample-link">‿</span> = 音をつなぐ</span>
             </div>
           </div>
           <div class="section-heading">
@@ -689,11 +702,17 @@
           const card = document.createElement("article");
           card.className = "sentence-card";
           card.innerHTML = `
-            <button class="play-sentence" type="button" aria-label="文${index + 1}を再生" aria-pressed="false">▶</button>
-            <audio class="sentence-audio" preload="none" src="./audio/review/${key}/${String(index + 1).padStart(2, "0")}.mp3" hidden></audio>
             <div class="sentence-copy">
               <span class="sentence-number">${String(index + 1).padStart(2, "0")}</span>
               <p class="practice-text">${renderPracticeText(sentence)}</p>
+              <div class="audio-tools sentence-player">
+                <audio class="sentence-audio" controls preload="metadata" src="./audio/review/${key}/${String(index + 1).padStart(2, "0")}.mp3" aria-label="文${index + 1}の音声"></audio>
+                <div class="speed-buttons" aria-label="文${index + 1}の再生速度">
+                  <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                  <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                  <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+                </div>
+              </div>
               <details class="ipa-panel">
                 <summary>発音記号を表示する</summary>
                 <p class="ipa-text">${story.ipas[index]}</p>
@@ -707,22 +726,9 @@
       buildPanel("story1");
       buildPanel("story2");
 
-      let activeStop = null;
-
-      function stopSentence() {
-        if (!activeStop) return;
-        const { audio, handler, button, card } = activeStop;
-        audio.removeEventListener("ended", handler);
-        button.setAttribute("aria-pressed", "false");
-        button.textContent = "▶";
-        card.classList.remove("playing");
-        activeStop = null;
-      }
-
       document.addEventListener("click", (event) => {
         const tab = event.target.closest(".tab-btn");
         if (tab) {
-          stopSentence();
           document.querySelectorAll("audio").forEach((audio) => audio.pause());
           document.querySelectorAll(".tab-btn").forEach((button) => {
             const active = button === tab;
@@ -738,9 +744,9 @@
 
         const speed = event.target.closest(".speed-btn");
         if (speed) {
-          const panel = speed.closest(".story-panel");
-          panel.querySelector(".main-audio").playbackRate = Number(speed.dataset.rate);
-          panel.querySelectorAll(".speed-btn").forEach((button) => button.classList.toggle("active", button === speed));
+          const tools = speed.closest(".audio-tools");
+          tools.querySelector("audio").playbackRate = Number(speed.dataset.rate);
+          tools.querySelectorAll(".speed-btn").forEach((button) => button.classList.toggle("active", button === speed));
           return;
         }
 
@@ -755,31 +761,6 @@
           return;
         }
 
-        const play = event.target.closest(".play-sentence");
-        if (play) {
-          const panel = play.closest(".story-panel");
-          const card = play.closest(".sentence-card");
-          const audio = card.querySelector(".sentence-audio");
-          const mainAudio = panel.querySelector(".main-audio");
-          if (activeStop?.button === play) {
-            audio.pause();
-            stopSentence();
-            return;
-          }
-          stopSentence();
-          document.querySelectorAll("audio").forEach((item) => {
-            if (item !== audio) item.pause();
-          });
-          const handler = () => stopSentence();
-          activeStop = { audio, handler, button: play, card };
-          audio.currentTime = 0;
-          audio.playbackRate = mainAudio.playbackRate;
-          audio.addEventListener("ended", handler);
-          play.setAttribute("aria-pressed", "true");
-          play.textContent = "■";
-          card.classList.add("playing");
-          audio.play();
-        }
       });
 
       document.addEventListener("play", (event) => {
