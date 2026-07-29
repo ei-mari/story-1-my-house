@@ -645,6 +645,7 @@
         const forceStress = base === "have"
           && (
             sentence === "They have fun."
+            || sentence === "We have a small pool."
             || sentence === "We have a garage, and we park our car in the garage."
           );
         if (!forceStress && (functionWords.has(cleaned) || functionWords.has(base))) return word;
