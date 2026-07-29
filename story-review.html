@@ -641,10 +641,11 @@
         return vowel.test(b) || (vowelEnd.test(a) && vowel.test(b));
       }
 
-      function renderStressedWord(word) {
+      function renderStressedWord(word, sentence) {
         const cleaned = cleanWord(word);
         const base = cleaned.replace(/[’']s$/, "");
-        if (functionWords.has(cleaned) || functionWords.has(base)) return word;
+        const forceStress = sentence === "They have fun." && base === "have";
+        if (!forceStress && (functionWords.has(cleaned) || functionWords.has(base))) return word;
         const range = stressedSyllables[base] || [0, base.length];
         const possessiveLength = cleaned.length - base.length;
         const end = Math.min(range[1], word.length - possessiveLength);
@@ -671,13 +672,23 @@
                 || (sentence === "It is yellow and white."
                   && cleanWord(parts[previousWordIndex]) === "yellow"
                   && cleanWord(parts[nextWordIndex]) === "and")
+                || (sentence === "There is also an avocado tree."
+                  && (
+                    (cleanWord(parts[previousWordIndex]) === "also"
+                      && cleanWord(parts[nextWordIndex]) === "an")
+                    || (cleanWord(parts[previousWordIndex]) === "an"
+                      && cleanWord(parts[nextWordIndex]) === "avocado")
+                  ))
+                || (sentence === "I like to eat the fruit from the trees."
+                  && cleanWord(parts[previousWordIndex]) === "to"
+                  && cleanWord(parts[nextWordIndex]) === "eat")
               );
             if (isSpace && !skipLink && previousWordIndex !== undefined && nextWordIndex !== undefined && shouldLink(parts[previousWordIndex], parts[nextWordIndex])) {
               return '<span class="link-mark" aria-label="link">‿</span>';
             }
             return part;
           }
-          return renderStressedWord(part);
+          return renderStressedWord(part, sentence);
         }).join("");
       }
 
