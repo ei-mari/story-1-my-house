@@ -517,7 +517,7 @@
             "/ɪn ðɪs ˈsʌmɚ, maɪ kɪdz swɪm ɪn ðə pul/",
             "/ðeɪ hæv fʌn/",
             "/wi hæv ə ɡəˈrɑdʒ, ənd wi pɑrk ˈaʊɚ kɑr ɪn ðə ɡəˈrɑdʒ/",
-            "/ˈaʊɚ kɑr ɪz blu/",
+            "/ar kɑr ɪz blu/",
             "/wir ˈhæpi hɪr/",
             "/wi laɪk ˈaʊɚ haʊs, ˈaʊɚ jɑrd, ænd ˈaʊɚ kɑr/",
           ],
@@ -664,7 +664,11 @@
       function renderStressedWord(word, sentence) {
         const cleaned = cleanWord(word);
         const base = cleaned.replace(/[’']s$/, "");
-        const forceStress = sentence === "They have fun." && base === "have";
+        const forceStress = base === "have"
+          && (
+            sentence === "They have fun."
+            || sentence === "We have a garage, and we park our car in the garage."
+          );
         if (!forceStress && (functionWords.has(cleaned) || functionWords.has(base))) return word;
         const range = stressedSyllables[base] || [0, base.length];
         const possessiveLength = cleaned.length - base.length;
