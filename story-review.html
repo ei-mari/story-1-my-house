@@ -717,8 +717,27 @@
                 || (sentence === "I like to eat the fruit from the trees."
                   && cleanWord(parts[previousWordIndex]) === "to"
                   && cleanWord(parts[nextWordIndex]) === "eat")
+                || (sentence === "My husband’s name is Calvin."
+                  && cleanWord(parts[previousWordIndex]) === "name"
+                  && cleanWord(parts[nextWordIndex]) === "is")
+                || (sentence === "Maddox is ten years old."
+                  && cleanWord(parts[previousWordIndex]) === "maddox"
+                  && cleanWord(parts[nextWordIndex]) === "is")
+                || (sentence === "Maddox is the oldest child."
+                  && cleanWord(parts[previousWordIndex]) === "maddox"
+                  && cleanWord(parts[nextWordIndex]) === "is")
               );
-            if (isSpace && !skipLink && previousWordIndex !== undefined && nextWordIndex !== undefined && shouldLink(parts[previousWordIndex], parts[nextWordIndex])) {
+            const forceLink = previousWordIndex !== undefined
+              && nextWordIndex !== undefined
+              && (
+                (sentence === "Maddox is ten years old."
+                  && cleanWord(parts[previousWordIndex]) === "ten"
+                  && cleanWord(parts[nextWordIndex]) === "years")
+                || (sentence === "Ivory is seven years old."
+                  && cleanWord(parts[previousWordIndex]) === "seven"
+                  && cleanWord(parts[nextWordIndex]) === "years")
+              );
+            if (isSpace && !skipLink && previousWordIndex !== undefined && nextWordIndex !== undefined && (forceLink || shouldLink(parts[previousWordIndex], parts[nextWordIndex]))) {
               return '<span class="link-mark" aria-label="link">‿</span>';
             }
             return part;
@@ -770,7 +789,7 @@
               <span class="sentence-number">${String(index + 1).padStart(2, "0")}</span>
               <p class="practice-text">${renderPracticeText(sentence)}</p>
               <div class="audio-tools sentence-player">
-                <audio class="sentence-audio" controls preload="metadata" src="./audio/review/${key}/${String(index + 1).padStart(2, "0")}.mp3" aria-label="文${index + 1}の音声"></audio>
+                <audio class="sentence-audio" controls preload="metadata" src="./audio/review/${key}/${String(index + 1).padStart(2, "0")}.mp3?v=20260729-2" aria-label="文${index + 1}の音声"></audio>
                 <div class="speed-buttons" aria-label="文${index + 1}の再生速度">
                   <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
                   <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
