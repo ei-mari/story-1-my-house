@@ -250,12 +250,12 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
-        margin-top: 12px;
+        margin: 10px 0 12px;
       }
 
       .cue-toggle {
         min-height: 42px;
-        border: 1px solid #d5e3ed;
+        border: 1px solid color-mix(in srgb, var(--accent) 35%, #d5e3ed);
         border-radius: 6px;
         color: #31536e;
         background: #ffffff;
@@ -264,8 +264,28 @@
 
       .cue-toggle.active {
         border-color: var(--accent);
-        color: var(--accent);
-        background: color-mix(in srgb, var(--accent) 8%, white);
+        color: #ffffff;
+        background: var(--accent);
+      }
+
+      .practice-guide {
+        padding: 13px 14px;
+        border: 1px solid color-mix(in srgb, var(--accent) 18%, #dbe6ee);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(30, 65, 99, 0.06);
+      }
+
+      .practice-guide p {
+        margin: 0;
+        color: #31506c;
+        font-size: 0.86rem;
+        font-weight: 700;
+        line-height: 1.65;
+      }
+
+      .practice-guide p + p {
+        margin-top: 3px;
       }
 
       .section-heading {
@@ -666,6 +686,9 @@
                 (sentence === "I live in Portugal."
                   && cleanWord(parts[previousWordIndex]) === "live"
                   && cleanWord(parts[nextWordIndex]) === "in")
+                || (sentence === "I live in a big house."
+                  && cleanWord(parts[previousWordIndex]) === "live"
+                  && cleanWord(parts[nextWordIndex]) === "in")
                 || (sentence === "Portugal is in Europe, next to Spain."
                   && cleanWord(parts[previousWordIndex]) === "portugal"
                   && cleanWord(parts[nextWordIndex]) === "is")
@@ -709,14 +732,18 @@
                 <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
               </div>
             </div>
-            <div class="cue-toolbar">
-              <button class="cue-toggle active" type="button" data-cue="rhythm" aria-pressed="true">Rhythm ON</button>
-              <button class="cue-toggle active" type="button" data-cue="linking" aria-pressed="true">Linking ON</button>
-            </div>
           </div>
           <div class="section-heading">
             <h3>Sentence Practice</h3>
             <span class="counter">${story.sentences.length} sentences</span>
+          </div>
+          <div class="practice-guide">
+            <p>Rhythm を押すと内容語（の強勢音節）が青く目立ちます。</p>
+            <p>Linking を押すとリンキングの目安が表示されます。</p>
+          </div>
+          <div class="cue-toolbar" aria-label="発音ヒントの表示切り替え">
+            <button class="cue-toggle active" type="button" data-cue="rhythm" aria-pressed="true">Rhythm</button>
+            <button class="cue-toggle active" type="button" data-cue="linking" aria-pressed="true">Linking</button>
           </div>
           <div class="sentence-list"></div>
         `;
@@ -780,7 +807,6 @@
           const active = !cue.classList.contains("active");
           cue.classList.toggle("active", active);
           cue.setAttribute("aria-pressed", String(active));
-          cue.textContent = `${cue.dataset.cue === "rhythm" ? "Rhythm" : "Linking"} ${active ? "ON" : "OFF"}`;
           panel.classList.toggle(`hide-${cue.dataset.cue}`, !active);
           return;
         }
