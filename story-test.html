@@ -478,6 +478,57 @@
         letter-spacing: 0;
       }
 
+      .sentence-index {
+        margin-bottom: 14px;
+        padding: 14px;
+        border: 1px solid color-mix(in srgb, var(--accent) 18%, #dbe6ee);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(30, 65, 99, 0.06);
+      }
+
+      .sentence-index h3 {
+        margin: 0 0 9px;
+        color: var(--accent);
+        font-size: 0.86rem;
+        letter-spacing: 0;
+      }
+
+      .index-list {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .index-link {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 7px;
+        align-items: start;
+        padding: 8px 9px;
+        border: 1px solid #e1e9ef;
+        border-radius: 6px;
+        color: #19334f;
+        background: #f8fbfd;
+        font-family: "Arimo", Arial, sans-serif;
+        font-size: 0.86rem;
+        font-weight: 600;
+        line-height: 1.45;
+        text-decoration: none;
+      }
+
+      .index-link span:first-child {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .sentence-card {
+        scroll-margin-top: 82px;
+      }
+
       .story-summary {
         padding: 15px 16px;
         border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
@@ -710,7 +761,7 @@
       function sentenceCard(key, story, sentenceNumber) {
         const index = sentenceNumber - 1;
         return `
-          <article class="sentence-card">
+          <article id="${key}-sentence-${sentenceNumber}" class="sentence-card">
             <div class="sentence-copy">
               <span class="sentence-number">${String(sentenceNumber).padStart(2, "0")}</span>
               <p class="practice-text">${story.sentences[index]}</p>
@@ -743,6 +794,20 @@
         `).join("");
 
         const blocks = ranges.map(([start, end], blockIndex) => {
+          const indexLinks = Array.from(
+            { length: end - start + 1 },
+            (_, offset) => {
+              const sentenceNumber = start + offset;
+              return `
+                <li>
+                  <a class="index-link" href="#${key}-sentence-${sentenceNumber}">
+                    <span>${String(sentenceNumber).padStart(2, "0")}</span>
+                    <span>${story.sentences[sentenceNumber - 1]}</span>
+                  </a>
+                </li>
+              `;
+            },
+          ).join("");
           const cards = Array.from(
             { length: end - start + 1 },
             (_, offset) => sentenceCard(key, story, start + offset),
@@ -754,6 +819,10 @@
                 <div><p>BLOCK ${blockIndex + 1}</p><h2>Sentences ${start}–${end}</h2></div>
                 <span class="counter">${end - start + 1} sentences</span>
               </div>
+              <nav class="sentence-index" aria-label="Block ${blockIndex + 1} 英文一覧">
+                <h3>英文一覧</h3>
+                <ol class="index-list">${indexLinks}</ol>
+              </nav>
               <div class="sentence-list">${cards}</div>
               <div class="finish-box">
                 <strong>Great job!</strong>
