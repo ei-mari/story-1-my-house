@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story Practice Test</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Arimo:wght@400;600;700&display=swap");
+
+      :root {
+        --ink: #172a50;
+        --muted: #607286;
+        --paper: #ffffff;
+        --pink: #d93679;
+        --blue: #0879bd;
+        --yellow: #ffd75e;
+        --green: #4f8c3b;
+        --line: rgba(23, 42, 80, 0.12);
+        --shadow: 0 14px 34px rgba(47, 67, 104, 0.13);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        color: var(--ink);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.94) 46%),
+          linear-gradient(135deg, #dff2ff 0%, #fff3bd 48%, #ffe3ef 100%);
+        font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      }
+
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .page {
+        width: min(430px, calc(100% - 20px));
+        padding: 12px 0 42px;
+      }
+
+      .cover {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        aspect-ratio: 16 / 8.5;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+      }
+
+      .cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .cover img:first-child {
+        object-position: 100% center;
+      }
+
+      .cover img:nth-of-type(2) {
+        object-position: 100% center;
+      }
+
+      .cover::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 35%, rgba(11, 31, 63, 0.84));
+      }
+
+      .cover-title {
+        position: absolute;
+        z-index: 1;
+        left: 18px;
+        right: 18px;
+        bottom: 14px;
+        color: #ffffff;
+      }
+
+      .cover-title p {
+        margin: 0 0 2px;
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .cover-title h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 8vw, 2.25rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .mission {
+        margin-top: 12px;
+        padding: 16px;
+        border: 1px solid rgba(8, 121, 189, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 9px 24px rgba(47, 67, 104, 0.09);
+      }
+
+      .mission strong {
+        display: block;
+        color: #12355a;
+        font-size: 1.05rem;
+      }
+
+      .mission p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1.65;
+      }
+
+      .tabs {
+        position: sticky;
+        top: 8px;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-top: 12px;
+        padding: 6px;
+        border: 1px solid rgba(18, 84, 137, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 8px 22px rgba(19, 57, 96, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      .tab-btn {
+        min-height: 46px;
+        border: 0;
+        border-radius: 6px;
+        color: #31536e;
+        background: transparent;
+        font-weight: 900;
+      }
+
+      .tab-btn.active[data-story="story1"] {
+        color: #ffffff;
+        background: linear-gradient(180deg, #1599ec, #006dbb);
+      }
+
+      .tab-btn.active[data-story="story2"] {
+        color: #ffffff;
+        background: linear-gradient(180deg, #e64989, #bd2868);
+      }
+
+      .story-panel[hidden] {
+        display: none;
+      }
+
+      .story-panel {
+        --accent: var(--blue);
+        margin-top: 14px;
+      }
+
+      .story-panel[data-story="story2"] {
+        --accent: var(--pink);
+      }
+
+      .player-panel {
+        padding: 16px;
+        border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+      }
+
+      .story-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .story-heading p,
+      .story-heading h2 {
+        margin: 0;
+      }
+
+      .story-heading p {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .story-heading h2 {
+        margin-top: 2px;
+        font-size: 1.55rem;
+        letter-spacing: 0;
+      }
+
+      .duration {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      audio {
+        width: 100%;
+        height: 42px;
+      }
+
+      .speed-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+        margin-top: 9px;
+      }
+
+      .speed-btn {
+        min-height: 38px;
+        border: 1px solid #d5e3ed;
+        border-radius: 6px;
+        color: #31536e;
+        background: #f8fbfd;
+        font-size: 0.86rem;
+        font-weight: 900;
+      }
+
+      .speed-btn.active {
+        border-color: var(--accent);
+        color: #ffffff;
+        background: var(--accent);
+      }
+
+      .cue-toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 10px 0 12px;
+      }
+
+      .cue-toggle {
+        min-height: 42px;
+        border: 1px solid color-mix(in srgb, var(--accent) 35%, #d5e3ed);
+        border-radius: 6px;
+        color: #31536e;
+        background: #ffffff;
+        font-weight: 900;
+      }
+
+      .cue-toggle.active {
+        border-color: var(--accent);
+        color: #ffffff;
+        background: var(--accent);
+      }
+
+      .practice-guide {
+        padding: 13px 14px;
+        border: 1px solid color-mix(in srgb, var(--accent) 18%, #dbe6ee);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(30, 65, 99, 0.06);
+      }
+
+      .practice-guide p {
+        margin: 0;
+        color: #31506c;
+        font-size: 0.86rem;
+        font-weight: 700;
+        line-height: 1.65;
+      }
+
+      .practice-guide p + p {
+        margin-top: 3px;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 22px 2px 10px;
+      }
+
+      .section-heading h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        letter-spacing: 0;
+      }
+
+      .counter {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      .sentence-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .sentence-card {
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 7px 18px rgba(30, 65, 99, 0.07);
+      }
+
+      .sentence-copy {
+        min-width: 0;
+      }
+
+      .sentence-number {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .ipa-panel {
+        margin-top: 10px;
+        border: 1px solid #d9e5ee;
+        border-radius: 7px;
+        background: #f6fafc;
+      }
+
+      .ipa-panel summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 9px 11px;
+        color: #31506c;
+        font-size: 0.82rem;
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .ipa-panel summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .ipa-panel summary::after {
+        content: "+";
+        display: grid;
+        flex: 0 0 22px;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .ipa-panel[open] summary::after {
+        content: "−";
+      }
+
+      .ipa-text {
+        margin: 0;
+        padding: 10px 11px 12px;
+        border-top: 1px solid #d9e5ee;
+        color: #172f48;
+        font-family: "Arimo", Arial, sans-serif;
+        font-size: 1.02rem;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+      }
+
+      .sentence-player {
+        margin-top: 12px;
+        padding-top: 11px;
+        border-top: 1px solid #e3ebf1;
+      }
+
+      .sentence-player .speed-btn {
+        min-height: 36px;
+      }
+
+      .practice-text {
+        margin: 0;
+        color: #19334f;
+        font-family: "Arimo", Arial, sans-serif;
+        font-size: 1.08rem;
+        font-weight: 400;
+        line-height: 1.65;
+        overflow-wrap: anywhere;
+      }
+
+      .stress-word {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .story-panel.hide-rhythm .stress-word {
+        color: inherit;
+        font-weight: inherit;
+      }
+
+      .footer-note {
+        margin: 22px 0 0;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .block-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+        margin: 12px 0 16px;
+      }
+
+      .block-tab {
+        min-height: 48px;
+        padding: 6px;
+        border: 1px solid color-mix(in srgb, var(--accent) 28%, #d5e3ed);
+        border-radius: 7px;
+        color: #31536e;
+        background: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 900;
+        line-height: 1.3;
+      }
+
+      .block-tab.active {
+        border-color: var(--accent);
+        color: #ffffff;
+        background: var(--accent);
+      }
+
+      .block-panel[hidden] {
+        display: none;
+      }
+
+      .block-intro {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 18px 2px 10px;
+      }
+
+      .block-intro p,
+      .block-intro h2 {
+        margin: 0;
+      }
+
+      .block-intro p {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .block-intro h2 {
+        margin-top: 3px;
+        font-size: 1.35rem;
+        letter-spacing: 0;
+      }
+
+      .story-summary {
+        padding: 15px 16px;
+        border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+      }
+
+      .story-summary p,
+      .story-summary h2 {
+        margin: 0;
+      }
+
+      .story-summary p {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .story-summary h2 {
+        margin-top: 3px;
+        font-size: 1.5rem;
+        letter-spacing: 0;
+      }
+
+      .finish-box {
+        margin-top: 14px;
+        padding: 18px 16px;
+        border: 1px solid color-mix(in srgb, var(--accent) 24%, #dbe6ee);
+        border-radius: 8px;
+        text-align: center;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(30, 65, 99, 0.08);
+      }
+
+      .finish-box strong {
+        display: block;
+        color: var(--accent);
+        font-size: 1.18rem;
+      }
+
+      .finish-box p {
+        margin: 5px 0 13px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1.55;
+      }
+
+      .next-block {
+        width: 100%;
+        min-height: 46px;
+        border: 0;
+        border-radius: 7px;
+        color: #ffffff;
+        background: var(--accent);
+        font-weight: 900;
+      }
+
+      .practice-text {
+        color: #19334f;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="cover" aria-label="Story 1 and Story 2 review">
+        <img src="./assets/story-1/story_1.png" alt="Story 1 My House" />
+        <img src="./assets/story-2/camile.png" alt="Story 2 Camille’s Family" />
+        <div class="cover-title">
+          <p>STORY 1 + STORY 2</p>
+          <h1>Practice Test</h1>
+        </div>
+      </section>
+
+      <section class="mission">
+        <strong>3つのブロックで仕上げよう</strong>
+        <p>文ごとの音声を聞き、英文を見ながら声に出して練習しましょう。</p>
+      </section>
+
+      <nav class="tabs" role="tablist" aria-label="Story review tabs">
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-story="story1">STORY 1</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-story="story2">STORY 2</button>
+      </nav>
+
+      <section id="story1Panel" class="story-panel" data-story="story1" role="tabpanel"></section>
+      <section id="story2Panel" class="story-panel" data-story="story2" role="tabpanel" hidden></section>
+
+      <p class="footer-note">Story Practice Test</p>
+    </main>
+
+    <script>
+      const stories = {
+        story1: {
+          eyebrow: "STORY 1 REVIEW",
+          title: "My House",
+          duration: "0:57",
+          audio: "./audio/review/story1-review.mp3",
+          sentences: [
+            "I live in Portugal.",
+            "Portugal is in Europe, next to Spain.",
+            "I live in a small city on the sea.",
+            "There are many cars that drive on our street.",
+            "I live in a big house.",
+            "It is yellow and white.",
+            "My house has two floors.",
+            "It has four bedrooms, four bathrooms, a kitchen, and a living room.",
+            "There are many windows.",
+            "I like my house.",
+            "My house has a yard with a lot of trees.",
+            "There is an orange tree.",
+            "There is also an avocado tree.",
+            "I like to eat the fruit from the trees.",
+            "The fruit is very good.",
+            "I like to sit outside and watch my children play.",
+            "We have a small pool.",
+            "In this summer, my kids swim in the pool.",
+            "They have fun.",
+            "We have a garage, and we park our car in the garage.",
+            "Our car is blue.",
+            "We're happy here.",
+            "We like our house, our yard, and our car.",
+          ],
+          ipas: [
+            "/aɪ lɪv ɪn ˈpɔrtʃəɡəl/",
+            "/ˈpɔrtʃəɡəl ɪz ɪn ˈjʊrəp, nɛkst tə speɪn/",
+            "/aɪ lɪv ɪn ə smɔl ˈsɪti ɑn ðə si/",
+            "/ðɛr ɚ ˈmɛni kɑrz ðət draɪv ɑn ar strit/",
+            "/aɪ lɪv ɪn ə bɪɡ haʊs/",
+            "/ɪt ɪz ˈjɛloʊ ənd waɪt/",
+            "/maɪ haʊs hæz tu flɔrz/",
+            "/ɪt həz fɔr ˈbɛdˌrumz, fɔr ˈbæθˌrumz, ə ˈkɪtʃən, ənd ə ˈlɪvɪŋ rum/",
+            "/ðɛr ɚ ˈmɛni ˈwɪndoʊz/",
+            "/aɪ laɪk maɪ haʊs/",
+            "/maɪ haʊs hæz ə jɑrd wɪð ə lɑt əv triz/",
+            "/ðɛr ɪz ən ˈɔrɪndʒ tri/",
+            "/ðɛr ɪz ˈɔlsoʊ ən ˌævəˈkɑdoʊ tri/",
+            "/aɪ laɪk tə it ðə frut frəm ðə triz/",
+            "/ðə frut ɪz ˈvɛri ɡʊd/",
+            "/aɪ laɪk tə sɪt ˌaʊtˈsaɪd ənd wɑtʃ maɪ ˈtʃɪldrən pleɪ/",
+            "/wi hæv ə smɔl pul/",
+            "/ɪn ðɪs ˈsʌmɚ, maɪ kɪdz swɪm ɪn ðə pul/",
+            "/ðeɪ hæv fʌn/",
+            "/wi hæv ə ɡəˈrɑdʒ, ənd wi pɑrk ˈaʊɚ kɑr ɪn ðə ɡəˈrɑdʒ/",
+            "/ɑr kɑr ɪz blu/",
+            "/wir ˈhæpi hɪr/",
+            "/wi laɪk ɑr haʊs, ɑr jɑrd, ænd ɑr kɑr/",
+          ],
+          timings: [[0,1.76],[2.18,4.94],[5.58,8.22],[8.46,10.88],[11.48,13.3],[13.48,15.02],[15.56,17.24],[17.62,22.44],[22.56,23.92],[24.28,25.34],[26.06,28.54],[28.34,30.48],[30.6,32.72],[33.16,35.24],[35.46,37.12],[37.68,40.56],[40.94,42.36],[42.68,45.3],[45.52,46.56],[47.16,50.28],[50.72,52.02],[52.44,53.92],[53.94,56.9]],
+        },
+        story2: {
+          eyebrow: "STORY 2 REVIEW",
+          title: "Camille’s Family",
+          duration: "1:11",
+          audio: "./audio/review/story2-review.mp3",
+          sentences: [
+            "My name is Camille.",
+            "I am married.",
+            "My husband’s name is Calvin.",
+            "I am his wife.",
+            "We have three children.",
+            "Their names are Maddox, Ivory, and Kairo.",
+            "Maddox is ten years old.",
+            "Ivory is seven years old.",
+            "And Kairo is five years old.",
+            "Maddox is the oldest child.",
+            "Ivory is the middle child.",
+            "Kairo is the youngest child.",
+            "We call the youngest child “the baby.”",
+            "Maddox and Kairo are boys.",
+            "They are brothers.",
+            "Ivory is a girl.",
+            "She is Maddox and Kairo’s sister.",
+            "Maddox and Kairo are Ivory’s brothers.",
+            "Maddox, Ivory, and Kairo are siblings.",
+            "My parents are named Tom and Helen.",
+            "Helen is my mother.",
+            "Tom is my father.",
+            "I am their daughter.",
+            "Helen is my kids’ grandmother.",
+            "Grandma.",
+            "Tom is my kids’ grandfather.",
+            "Grandpa.",
+            "They are my children’s grandparents.",
+            "They love my children.",
+            "My children love their grandparents.",
+          ],
+          ipas: [
+            "/maɪ neɪm ɪz kəˈmil/",
+            "/aɪ əm ˈmɛrid/",
+            "/maɪ ˈhʌzbəndz neɪm ɪz ˈkælvɪn/",
+            "/aɪ əm hɪz waɪf/",
+            "/wi həv θri ˈtʃɪldrən/",
+            "/ðɛr neɪmz ɚ ˈmædəks, ˈaɪvəri, ənd ˈkaɪroʊ/",
+            "/ˈmædəks ɪz tɛn jɪrz oʊld/",
+            "/ˈaɪvəri ɪz ˈsɛvən jɪrz oʊld/",
+            "/ənd ˈkaɪroʊ ɪz faɪv jɪrz oʊld/",
+            "/ˈmædəks ɪz ði ˈoʊldəst tʃaɪld/",
+            "/ˈaɪvəri ɪz ðə ˈmɪdəl tʃaɪld/",
+            "/ˈkaɪroʊ ɪz ðə ˈjʌŋɡəst tʃaɪld/",
+            "/wi kɔl ðə ˈjʌŋɡəst tʃaɪld ðə ˈbeɪbi/",
+            "/ˈmædəks ənd ˈkaɪroʊ ɚ bɔɪz/",
+            "/ðeɪ ɚ ˈbrʌðɚz/",
+            "/ˈaɪvəri ɪz ə ɡɝl/",
+            "/ʃi ɪz ˈmædəks ənd ˈkaɪroʊz ˈsɪstɚ/",
+            "/ˈmædəks ənd ˈkaɪroʊ ɚ ˈaɪvəriz ˈbrʌðɚz/",
+            "/ˈmædəks, ˈaɪvəri, ənd ˈkaɪroʊ ɚ ˈsɪblɪŋz/",
+            "/maɪ ˈpɛrənts ɚ neɪmd tɑm ənd ˈhɛlən/",
+            "/ˈhɛlən ɪz maɪ ˈmʌðɚ/",
+            "/tɑm ɪz maɪ ˈfɑðɚ/",
+            "/aɪ əm ðɛr ˈdɔtɚ/",
+            "/ˈhɛlən ɪz maɪ kɪdz ˈɡrændˌmʌðɚ/",
+            "/ˈɡrændˌmɑ/",
+            "/tɑm ɪz maɪ kɪdz ˈɡrændˌfɑðɚ/",
+            "/ˈɡrændˌpɑ/",
+            "/ðeɪ ɚ maɪ ˈtʃɪldrənz ˈɡrændˌpɛrənts/",
+            "/ðeɪ lʌv maɪ ˈtʃɪldrən/",
+            "/maɪ ˈtʃɪldrən lʌv ðɛr ˈɡrændˌpɛrənts/",
+          ],
+          timings: [[0,1.58],[2.08,2.84],[3.42,5.36],[5.9,6.98],[7.64,9.18],[9.56,12.82],[13.7,15.5],[15.96,17.54],[17.82,19.9],[20.56,22.42],[23.04,24.58],[25.32,27.18],[27.68,30.62],[31.54,33.28],[33.8,34.68],[35.44,36.72],[37.2,39.4],[40.36,42.64],[43.8,46.52],[47.96,50.32],[51.18,52.46],[53.14,54.44],[54.24,56.76],[57.48,59.04],[59.6,60.6],[60.92,62.54],[63.18,63.78],[64.44,66.16],[66.96,68.46],[69.02,71.08]],
+        },
+      };
+
+      const blockRanges = {
+        story1: [[1, 8], [9, 15], [16, 23]],
+        story2: [[1, 9], [10, 19], [20, 30]],
+      };
+
+      function sentenceCard(key, story, sentenceNumber) {
+        const index = sentenceNumber - 1;
+        return `
+          <article class="sentence-card">
+            <div class="sentence-copy">
+              <span class="sentence-number">${String(sentenceNumber).padStart(2, "0")}</span>
+              <p class="practice-text">${story.sentences[index]}</p>
+              <div class="audio-tools sentence-player">
+                <audio class="sentence-audio" controls preload="metadata" src="./audio/review/${key}/${String(sentenceNumber).padStart(2, "0")}.mp3?v=20260729-6" aria-label="文${sentenceNumber}の音声"></audio>
+                <div class="speed-buttons" aria-label="文${sentenceNumber}の再生速度">
+                  <button class="speed-btn" type="button" data-rate="0.5">0.5x</button>
+                  <button class="speed-btn" type="button" data-rate="0.75">0.75x</button>
+                  <button class="speed-btn active" type="button" data-rate="1">1.0x</button>
+                </div>
+              </div>
+              <details class="ipa-panel">
+                <summary>発音記号を表示する</summary>
+                <p class="ipa-text">${story.ipas[index]}</p>
+              </details>
+            </div>
+          </article>
+        `;
+      }
+
+      function buildPanel(key) {
+        const story = stories[key];
+        const ranges = blockRanges[key];
+        const panel = document.querySelector(`#${key}Panel`);
+        const tabs = ranges.map(([start, end], index) => `
+          <button class="block-tab${index === 0 ? " active" : ""}" type="button" role="tab"
+            aria-selected="${index === 0}" data-block="${index}">
+            Block ${index + 1}<br>${start}–${end}
+          </button>
+        `).join("");
+
+        const blocks = ranges.map(([start, end], blockIndex) => {
+          const cards = Array.from(
+            { length: end - start + 1 },
+            (_, offset) => sentenceCard(key, story, start + offset),
+          ).join("");
+          const isLast = blockIndex === ranges.length - 1;
+          return `
+            <section class="block-panel" data-block="${blockIndex}" ${blockIndex === 0 ? "" : "hidden"} role="tabpanel">
+              <div class="block-intro">
+                <div><p>BLOCK ${blockIndex + 1}</p><h2>Sentences ${start}–${end}</h2></div>
+                <span class="counter">${end - start + 1} sentences</span>
+              </div>
+              <div class="sentence-list">${cards}</div>
+              <div class="finish-box">
+                <strong>Great job!</strong>
+                <p>${isLast ? `${story.title} の3ブロックが完了しました！` : "次のブロックを練習しよう。"}</p>
+                ${isLast ? "" : `<button class="next-block" type="button" data-next="${blockIndex + 1}">次のブロックへ</button>`}
+              </div>
+            </section>
+          `;
+        }).join("");
+
+        panel.innerHTML = `
+          <div class="story-summary"><p>${key === "story1" ? "STORY 1 TEST" : "STORY 2 TEST"}</p><h2>${story.title}</h2></div>
+          <nav class="block-tabs" role="tablist" aria-label="${story.title} blocks">${tabs}</nav>
+          ${blocks}
+        `;
+      }
+
+      function selectBlock(storyPanel, blockIndex, scroll = true) {
+        document.querySelectorAll("audio").forEach((audio) => audio.pause());
+        storyPanel.querySelectorAll(".block-tab").forEach((button) => {
+          const active = Number(button.dataset.block) === blockIndex;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-selected", String(active));
+        });
+        storyPanel.querySelectorAll(".block-panel").forEach((block) => {
+          block.hidden = Number(block.dataset.block) !== blockIndex;
+        });
+        if (scroll) {
+          window.scrollTo({ top: storyPanel.querySelector(".block-tabs").offsetTop - 78, behavior: "smooth" });
+        }
+      }
+
+      buildPanel("story1");
+      buildPanel("story2");
+
+      document.addEventListener("click", (event) => {
+        const storyTab = event.target.closest(".tab-btn");
+        if (storyTab) {
+          document.querySelectorAll("audio").forEach((audio) => audio.pause());
+          document.querySelectorAll(".tab-btn").forEach((button) => {
+            const active = button === storyTab;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-selected", String(active));
+          });
+          document.querySelectorAll(".story-panel").forEach((panel) => {
+            panel.hidden = panel.dataset.story !== storyTab.dataset.story;
+          });
+          window.scrollTo({ top: document.querySelector(".tabs").offsetTop - 8, behavior: "smooth" });
+          return;
+        }
+
+        const blockTab = event.target.closest(".block-tab");
+        if (blockTab) {
+          selectBlock(blockTab.closest(".story-panel"), Number(blockTab.dataset.block));
+          return;
+        }
+
+        const next = event.target.closest(".next-block");
+        if (next) {
+          selectBlock(next.closest(".story-panel"), Number(next.dataset.next));
+          return;
+        }
+
+        const speed = event.target.closest(".speed-btn");
+        if (speed) {
+          const tools = speed.closest(".audio-tools");
+          tools.querySelector("audio").playbackRate = Number(speed.dataset.rate);
+          tools.querySelectorAll(".speed-btn").forEach((button) => button.classList.toggle("active", button === speed));
+        }
+      });
+
+      document.addEventListener("play", (event) => {
+        if (event.target.tagName !== "AUDIO") return;
+        document.querySelectorAll("audio").forEach((audio) => {
+          if (audio !== event.target) audio.pause();
+        });
+      }, true);
+    </script>
+  </body>
+</html>
