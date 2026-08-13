@@ -386,6 +386,41 @@
         overflow-wrap: anywhere;
       }
 
+      .memo-field {
+        display: grid;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .memo-field label {
+        color: #31506c;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .memo-input {
+        width: 100%;
+        min-height: 92px;
+        padding: 10px 11px;
+        resize: vertical;
+        border: 1px solid #c9d8e3;
+        border-radius: 7px;
+        color: #19334f;
+        background: #fbfdff;
+        font-family: "Arimo", Arial, sans-serif;
+        font-size: 1rem;
+        line-height: 1.55;
+      }
+
+      .memo-input:focus {
+        border-color: var(--accent);
+        outline: 3px solid rgba(31, 126, 190, 0.14);
+      }
+
+      .memo-input::placeholder {
+        color: #8295a5;
+      }
+
       .sentence-player {
         margin-top: 12px;
         padding-top: 11px;
@@ -777,6 +812,12 @@
                 <summary>発音記号を表示する</summary>
                 <p class="ipa-text">${story.ipas[index]}</p>
               </details>
+              <div class="memo-field">
+                <label for="${key}-memo-${sentenceNumber}">メモ</label>
+                <textarea id="${key}-memo-${sentenceNumber}" class="memo-input" rows="3"
+                  data-memo-key="story-test:${key}:${sentenceNumber}"
+                  placeholder="気づいたことや練習のポイントを入力"></textarea>
+              </div>
             </div>
           </article>
         `;
@@ -857,6 +898,24 @@
 
       buildPanel("story1");
       buildPanel("story2");
+
+      document.querySelectorAll(".memo-input").forEach((memo) => {
+        try {
+          memo.value = localStorage.getItem(memo.dataset.memoKey) || "";
+        } catch (error) {
+          // The memo remains usable even when browser storage is unavailable.
+        }
+      });
+
+      document.addEventListener("input", (event) => {
+        const memo = event.target.closest(".memo-input");
+        if (!memo) return;
+        try {
+          localStorage.setItem(memo.dataset.memoKey, memo.value);
+        } catch (error) {
+          // Ignore storage restrictions without interrupting practice.
+        }
+      });
 
       document.addEventListener("click", (event) => {
         const storyTab = event.target.closest(".tab-btn");
