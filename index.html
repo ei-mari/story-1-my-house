@@ -178,6 +178,16 @@
         gap: 14px;
       }
 
+      .archive-date {
+        margin: 0 0 14px;
+        padding: 12px 14px;
+        border-left: 4px solid var(--accent);
+        color: #173d5c;
+        background: rgba(255, 255, 255, 0.82);
+        font-weight: 700;
+        line-height: 1.7;
+      }
+
       .archive-card {
         padding: clamp(14px, 3vw, 18px);
         border: 1px solid var(--line);
@@ -544,10 +554,10 @@
       </section>
 
       <div class="tabs" role="tablist" aria-label="Story 1 lesson tabs">
-        <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="archivePanel" data-tab="archivePanel">
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="archivePanel" data-tab="archivePanel">
           アーカイブ
         </button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="archive2Panel" data-tab="archive2Panel">
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="archive2Panel" data-tab="archive2Panel">
           アーカイブ2
         </button>
         <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="homeworkPanel" data-tab="homeworkPanel">
@@ -555,7 +565,8 @@
         </button>
       </div>
 
-      <section id="archivePanel" class="tab-panel section" role="tabpanel">
+      <section id="archivePanel" class="tab-panel section" role="tabpanel" hidden>
+        <p class="archive-date">こちらは6月25日に開催した回のアーカイブです。</p>
         <div class="archive-grid">
           <article class="archive-card">
             <h2>PART 1</h2>
@@ -591,7 +602,8 @@
         </div>
       </section>
 
-      <section id="archive2Panel" class="tab-panel section" role="tabpanel" hidden>
+      <section id="archive2Panel" class="tab-panel section" role="tabpanel">
+        <p class="archive-date">こちらは、お盆の8月13日に開催した回のアーカイブです。</p>
         <div class="archive-grid">
           <article class="archive-card">
             <h2>PART 1（1–4）</h2>
