@@ -225,6 +225,13 @@
         margin: 0;
       }
 
+      .archive-switch {
+        margin-top: 12px;
+        border-color: #d8bc73;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
       .video-frame {
         position: relative;
         padding-top: 66.67%;
@@ -636,6 +643,7 @@
           <aside class="archive-notice" aria-labelledby="archive2NoticeTitle">
             <h2 id="archive2NoticeTitle">PART 5（17以降）について</h2>
             <p>撮影時の不備により、PART 5（17以降）の録画をご用意することができませんでした。楽しみにしてくださっていた皆さまには、心よりお詫び申し上げます。誠に恐れ入りますが、「アーカイブ」の動画をご参照のうえ、復習にお役立てください。</p>
+            <button class="pill-link archive-switch" type="button" data-open-tab="archivePanel">アーカイブを見る</button>
           </aside>
         </div>
       </section>
@@ -828,6 +836,13 @@
             item.setAttribute("aria-selected", String(isActive));
           });
           document.querySelectorAll(".audio-player").forEach((audio) => audio.pause());
+        });
+      });
+
+      document.querySelectorAll("[data-open-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.querySelector(`.tab-btn[data-tab="${button.dataset.openTab}"]`).click();
+          document.querySelector(".tabs").scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
 
