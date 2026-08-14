@@ -128,7 +128,7 @@
 
       .tabs {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 8px;
         margin-top: 14px;
         padding: 6px;
@@ -200,6 +200,10 @@
         border-radius: 8px;
         overflow: hidden;
         background: #dce9f5;
+      }
+
+      .video-frame.widescreen {
+        padding-top: 56.25%;
       }
 
       .video-frame iframe {
@@ -522,6 +526,9 @@
         <button class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="archivePanel" data-tab="archivePanel">
           アーカイブ
         </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="archive2Panel" data-tab="archive2Panel">
+          アーカイブ2
+        </button>
         <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="homeworkPanel" data-tab="homeworkPanel">
           HOMEWORK
         </button>
@@ -560,6 +567,24 @@
 
         <div class="slide-link-wrap">
           <a class="pill-link" href="https://canva.link/dzhn108u8mtkvu4" target="_blank" rel="noopener">スライドはこちら</a>
+        </div>
+      </section>
+
+      <section id="archive2Panel" class="tab-panel section" role="tabpanel" hidden>
+        <div class="archive-grid">
+          <article class="archive-card">
+            <h2>PART 1（1–4）</h2>
+            <div class="video-frame widescreen">
+              <iframe src="https://player.vimeo.com/video/1218164653?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Part 1（1-4）"></iframe>
+            </div>
+          </article>
+
+          <article class="archive-card">
+            <h2>PART 2（5–8）</h2>
+            <div class="video-frame widescreen">
+              <iframe src="https://player.vimeo.com/video/1218166411?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Part 2（5-8）"></iframe>
+            </div>
+          </article>
         </div>
       </section>
 
